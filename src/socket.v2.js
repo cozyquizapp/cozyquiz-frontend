@@ -10,19 +10,8 @@ function isLocal(h){
   return h === 'localhost' || h.startsWith('127.') || h.startsWith('192.168.') || h.endsWith('.local');
 }
 
-function looksLikeBackend(urlStr){
-  try{
-    const u = new URL(urlStr);
-    // Treat as backend if:
-    // - explicit api.* host
-    // - or common backend port
-    // - or an explicit socket.io path was provided
-    if (/^api\./i.test(u.hostname)) return true;
-    if (u.port === '3001') return true;
-    if (u.pathname && /socket\.io/.test(u.pathname)) return true;
-    return false;
-  }catch{ return false; }
-}
+// Legacy heuristic removed – we accept almost any provided absolute URL.
+function looksLikeBackend(){ return true; }
 
 function isTryCloudflare(urlStr){
   try{ const u = new URL(urlStr); return /trycloudflare\.com$/i.test(u.hostname); }catch{ return false; }
@@ -34,14 +23,13 @@ function sameOrigin(urlStr){
 
 let API;
 if (TUNNEL) {
-  // Guard against accidentally pointing sockets to a frontend preview domain
-  if (isTryCloudflare(TUNNEL) || sameOrigin(TUNNEL)) {
-    console.warn('[socket-v2] Ignoring preview/front URL for sockets:', TUNNEL);
-    TUNNEL = '';
-  } else if (!looksLikeBackend(TUNNEL) && !isLocal(new URL(TUNNEL).hostname)) {
-    console.warn('[socket-v2] Provided VITE_SOCKET_URL does not look like a backend. Using default API instead:', TUNNEL);
-    TUNNEL = '';
-  }
+  try {
+    // Guard only against same-origin or trycloudflare preview
+    if (isTryCloudflare(TUNNEL) || sameOrigin(TUNNEL)) {
+      console.warn('[socket-v2] Ignoring preview/front URL for sockets:', TUNNEL);
+      TUNNEL = '';
+    }
+  } catch {}
 }
 
 if (TUNNEL) {
@@ -52,6 +40,8 @@ if (TUNNEL) {
   console.warn('[socket-v2] VITE_SOCKET_URL missing/ignored – falling back to https://api.cozyquiz.app');
   API = 'https://api.cozyquiz.app';
 }
+
+console.log('[socket-v2] final API endpoint:', API);
 
 let _socket = null;
 let _auth = null;
