@@ -1,13 +1,6 @@
 {
-  "routes": [
-    { "src": "/favicon.ico", "dest": "/favicon.ico" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/logo/(.*)", "dest": "/logo/$1" },
-    { "src": "/avatars/(.*)", "dest": "/avatars/$1" },
-    { "src": "/categories/(.*)", "dest": "/categories/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
+  "version": 2,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
