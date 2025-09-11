@@ -1,0 +1,391 @@
+/* ===== base ===== */
+.scoreboard-shell{
+  padding: 12px clamp(4px,2vw,24px);
+  font-family: Inter, system-ui, sans-serif;
+  color: #e9eefc;
+  position: relative;
+  z-index: 0; /* alles UI über Hintergrund */
+}
+/* Fullscreen centering for beamer (/score) */
+.scoreboard-shell.minimal{
+  min-height: 100dvh; /* full dynamic viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(10px,2vh,40px) clamp(10px,2vw,48px);
+  box-sizing: border-box;
+  gap: clamp(18px,3vh,42px);
+}
+
+/* Category overview bar */
+.sb2-catbar{
+  width: min(1800px, 98vw);
+  box-sizing: border-box;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 18px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.35);
+}
+.sb2-catbar__inner{ display:flex; align-items:center; justify-content:space-between; gap: 10px; }
+.sb2-catbar__left{ display:flex; align-items:center; gap: 12px; }
+.sb2-catbar__left .category-icon{ width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
+.sb2-catbar__title{ display:flex; flex-direction:column; line-height:1; }
+.sb2-catbar__title .line1{ font-weight:900; font-size: clamp(1rem, 2.1vw, 1.6rem); letter-spacing:-.01em; }
+.sb2-catbar__title .line2{ margin-top: 2px; font-weight:700; opacity:.8; font-size: clamp(.85rem, 1.4vw, 1.1rem); }
+.sb2-catbar__chips{ display:flex; gap:8px; flex-wrap:wrap; }
+.sb2-catbar .chip{ background: rgba(10,15,24,.55); border:1px solid rgba(255,255,255,.10); padding: 6px 10px; border-radius: 999px; box-shadow: 0 8px 20px -6px rgba(0,0,0,.55); font-weight:700; }
+.sb2-catbar .chip strong{ color:#ffea9a; margin-left:6px; }
+.sb2-catbar .chip .icon.coin{ width: 18px; height: 18px; display:inline-block; background-image:url('/coin.png'); background-size:contain; background-repeat:no-repeat; margin-right:4px; }
+
+/* Enlarged race stage to nearly fill screen while preserving aspect */
+.scoreboard-shell.minimal .race-stage{
+  width: min(1800px, 98vw);
+  height: clamp(420px, 78vh, 1050px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Scalable lane heights based on viewport height */
+.scoreboard-shell.minimal .race-stage { --lane-h: clamp(120px, 20vh, 300px); }
+.scoreboard-shell.minimal .lane { height: var(--lane-h); margin: clamp(14px,3vh,42px) 0; }
+
+/* Bigger avatars on big screens */
+@media (min-width: 1100px) and (min-height: 650px){
+  .scoreboard-shell.minimal .avatar { width: clamp(80px, 12vh, 180px); height: clamp(80px, 12vh, 180px); }
+  .scoreboard-shell.minimal .bubble { font-size: clamp(.85rem,1.4vw,1.25rem); }
+  .scoreboard-shell.minimal .bubble .coins { font-size: 1.1em; }
+}
+
+/* Increase finish line height adaptively */
+.scoreboard-shell.minimal .race-stage .finish{ top: clamp(14px,2vh,40px); bottom: clamp(14px,2vh,40px); }
+
+/* Slightly wider rails on big display */
+@media (min-width: 1100px){
+  .scoreboard-shell.minimal .rail{ height: clamp(14px,2vh,24px); }
+  .scoreboard-shell.minimal .avatar{ border-width:4px; }
+}
+
+/* Countdown larger when fullscreen */
+@media (min-width: 900px){
+  .scoreboard-shell.minimal .countdown{ font-size: clamp(120px,18vw,220px); }
+}
+.sb-header{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom: 18px;
+  position: relative; z-index: 5; /* Titel bleibt sichtbar */
+}
+.sb-title{
+  margin:0; font-weight: 900;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  letter-spacing:-0.02em;
+  color:#eaf1ff;
+  /* Prefer Bagel on headings if available; falls back cleanly */
+  font-family: 'Bagel Fat One', Inter, system-ui, sans-serif;
+  text-shadow: 0 6px 22px rgba(0,0,0,.45);
+}
+.sb-mode{ font-size:14px; opacity:.7 }
+
+/* ===== timer (legacy removed) ===== */
+  /* ===== timer (entfernt im UI, Styles behalten falls reaktiviert) ===== */
+  .sb-timer{ height:8px; background:rgba(255,255,255,0.1); border-radius:999px; overflow:hidden; margin-bottom:14px; }
+  .sb-timer-bar{ height:100%; transform-origin:left; background:linear-gradient(90deg,#6aa8ff,#ffffff); box-shadow:0 0 12px rgba(106,168,255,0.45); transition:transform 100ms linear; }
+
+/* ===== stage ===== */
+.race-stage{
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 10px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.02);
+  min-height: 260px;
+  padding: 40px clamp(12px,3vw,32px);
+  overflow: hidden;
+}
+.race-stage.is-final{ overflow: visible; }
+
+/* Finish bei 90% der Breite (5% padding links + 90% Strecke) */
+.race-stage .finish{
+  position:absolute; top:26px; bottom:26px;
+  left: calc(5% + 80% - 2px);
+  width: 4px; border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #fff, #fff 8px,
+      rgba(0,0,0,.4) 8px, rgba(0,0,0,.4) 16px
+    );
+  filter: drop-shadow(0 0 12px rgba(255,255,255,.12));
+  z-index: 1;
+}
+
+/* Zwei Lanes (senkrecht untereinander, gleiche Schiene) */
+.lane{
+  position: relative;
+  height: 110px;
+  margin: 18px 0;
+  display: grid;
+  align-items: center;
+  isolation: isolate;
+}
+.lane .lane-bg-avatar{
+  position:absolute; top:50%; transform: translateY(-50%);
+  width: clamp(120px, 22vh, 260px); height: auto;
+  filter: blur(.2px) saturate(115%);
+  opacity: .08;
+  pointer-events: none;
+  transition: opacity .35s ease, left 120ms linear, transform 120ms linear;
+  z-index: 0; /* liegt unter Rail/Runner (DOM-Reihenfolge stellt Rail darüber) */
+}
+.rail{
+  position:absolute; left:5%; right:5%;
+  height: 10px; border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,.05)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.15) 0 14px, transparent 14px 28px);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 4px 16px -2px rgba(0,0,0,.55), 0 0 22px -4px #4ca3ff;
+  z-index: 0;
+}
+
+/* Runner: bewegt sich von 0..var(--x) entlang der Rail */
+.runner{
+  position: absolute; left:5%;
+  display: flex; align-items: center; gap: 12px;
+  will-change: left;
+  z-index: 2;
+}
+/* Inline coin label always visible */
+/* Coin box: space always reserved to avoid jump */
+.coins-inline{
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(10,15,24,.55);
+  border:1px solid rgba(255,255,255,.10);
+  padding: 8px 14px; border-radius: 14px;
+  font-weight:800; font-size: clamp(.85rem,1.2vw,1.4rem);
+  color:#ffea9a; backdrop-filter: blur(4px) saturate(140%);
+  box-shadow: 0 8px 20px -6px rgba(0,0,0,.55);
+  transform: translateX(4px);
+  min-width: 86px; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition: opacity .55s ease, filter .55s ease;
+  filter: blur(4px) saturate(60%);
+}
+.runner.hide-coins .coins-inline{ opacity:0; }
+.coins-inline .c-ico{ width:22px; height:22px; transition: transform .6s ease; }
+.runner.show-coins .coins-inline{ opacity:1; filter: blur(0) saturate(130%); pointer-events:auto; animation: coinReveal .75s cubic-bezier(.25,1.4,.3,1) 80ms both; }
+.runner.show-coins .coins-inline .c-ico{ transform: rotate(-10deg); }
+@keyframes coinReveal { 0%{ transform: scale(.7) translateX(-6px); opacity:0; filter:blur(6px);} 60%{ transform: scale(1.08) translateX(2px);} 100%{ transform: scale(1) translateX(0); opacity:1; filter:blur(0);} }
+@media (max-width: 760px){
+  .coins-inline{ padding:6px 10px; font-size:1rem; min-width:74px; }
+  .coins-inline .c-ico{ width:18px; height:18px; }
+}
+/* Stabiles Float für alle Modi (keine Höhenverschiebung beim Wechsel) */
+.runner{ animation: floatStable 4.8s ease-in-out infinite; }
+@keyframes floatStable { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-3px);} }
+
+/* Leader Aura */
+.runner.leader .avatar { box-shadow: 0 0 0 3px rgba(255,255,255,.18), 0 0 0 8px rgba(255,215,90,.25), 0 18px 36px -8px rgba(0,0,0,.6); }
+.runner.leader:before { content:""; position:absolute; left:50%; top:50%; width:180%; height:180%; transform:translate(-50%,-50%); background:radial-gradient(circle at 50% 45%, rgba(255,215,90,.28), rgba(255,200,60,.08) 55%, transparent 70%); filter:blur(18px); opacity:.65; mix-blend-mode:screen; pointer-events:none; animation: leaderPulse 3.4s ease-in-out infinite; }
+@keyframes leaderPulse { 0%,100%{ transform:translate(-50%,-50%) scale(1);} 50%{ transform:translate(-50%,-50%) scale(1.05);} }
+
+/* Rail Sweep */
+.rail:after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent); width:30%; transform:translateX(-120%); animation: railSweep 5s linear infinite; mix-blend-mode:overlay; }
+@keyframes railSweep { 0%{ transform:translateX(-120%);} 60%{ transform:translateX(120%);} 100%{ transform:translateX(120%);} }
+
+/* Avatar + Textblase */
+.avatar{
+  width: clamp(56px,6vw,88px);
+  height: clamp(56px,6vw,88px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,.14);
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+  background:#0a0f18;
+}
+
+/* Bubble erscheint nur in POST (React steuert showLabel) – links vom Avatar */
+/* bubble removed */
+
+.name{ font-weight: 900; letter-spacing:.01em; }
+.coins{
+  margin-top: 2px;
+  color: #ffea9a;
+  font-weight: 800;
+  display: inline-flex; gap: 6px; align-items: center;
+}
+.c-ico{
+  width:18px; height:18px;
+  background-image:url('/coin.png');
+  background-size:contain; background-repeat:no-repeat;
+  display:inline-block;
+}
+
+/* Countdown */
+.countdown-wrap{
+  position:absolute; inset:0; display:grid; place-items:center;
+  z-index: 6; pointer-events:none;
+}
+.countdown{
+  font-size: clamp(64px, 12vw, 160px);
+  font-weight: 900; letter-spacing:-.02em;
+  color:#fff;
+  text-shadow: 0 12px 36px rgba(0,0,0,.45), 0 0 60px rgba(255,255,255,.25);
+  animation: pop .7s cubic-bezier(.2,.9,.2,1);
+}
+.countdown.go{ color:#2ad18a; text-shadow: 0 12px 36px rgba(0,0,0,.45), 0 0 90px rgba(42,209,138,.4); }
+@keyframes pop{ 0%{transform:scale(.7);opacity:0} 60%{transform:scale(1.08);opacity:1} 100%{transform:scale(1)} }
+
+/* Mini-Legende */
+.mini-legend{
+  display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;
+}
+.chip{
+  display:flex; gap:8px; align-items:center;
+  background:#1b2130; padding:6px 10px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow: 0 6px 14px rgba(0,0,0,.25);
+  font-size:12px;
+}
+.chip img{ width:20px; height:20px; border-radius:50%; object-fit:cover; }
+.chip strong{ color:#ffea9a; }
+
+/* Winner Overlay */
+.winner-overlay{
+  position:absolute; inset:0; display:grid; place-items:center; z-index:90; pointer-events:none;
+}
+.winner-overlay .main-title.global{ position:absolute; top:-90px; left:50%; transform:translateX(-50%); white-space:nowrap; }
+.winner-overlay .winner-card{ position:relative; }
+.fx-layer{ position:absolute; inset:0; pointer-events:none; }
+.fx-glitter{ background: repeating-radial-gradient(circle at 30% 40%, rgba(255,255,255,.25), transparent 4px), repeating-radial-gradient(circle at 70% 60%, rgba(255,220,150,.25), transparent 5px); mix-blend-mode:screen; opacity:.35; animation: glitterMove 8s linear infinite; }
+@keyframes glitterMove{ 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(10px,-8px,0)} 100%{transform:translate3d(0,0,0)} }
+.fx-shine{ overflow:hidden; }
+.fx-shine:before{ content:""; position:absolute; top:0; bottom:0; width:40%; left:-50%; background:linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0)); filter:blur(6px); transform:skewX(-18deg); animation: shineSweep 5.5s ease-in-out 1s infinite; }
+@keyframes shineSweep{ 0%{ left:-60%; opacity:0} 10%{opacity:1} 45%{ left:120%; opacity:0} 100%{ left:120%; opacity:0} }
+.enter-bounce{ animation: enterBounce .9s cubic-bezier(.2,1.4,.3,1) both, winnerFloat 5.2s ease-in-out infinite 1s; }
+@keyframes enterBounce{ 0%{transform:scale(.4) rotate(-8deg)} 55%{transform:scale(1.05) rotate(2deg)} 75%{transform:scale(.97)} 100%{transform:scale(1)} }
+.podium-reserve{ height:0; }
+.winner-card{
+  background: rgba(10,15,24,.82);
+  padding: clamp(24px,4vw,48px) clamp(28px,5vw,56px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius: 28px;
+  box-shadow: 0 18px 40px -6px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05) inset;
+  backdrop-filter: blur(12px) saturate(140%);
+  text-align:center;
+  animation: winnerPop .9s cubic-bezier(.2,.9,.2,1);
+}
+.winner-card.podium{ max-width: 960px; width:100%; }
+.podium-grid{ display:grid; grid-template-columns: 1fr 1.3fr 1fr; gap: clamp(12px,3vw,40px); align-items:end; margin-top: clamp(18px,3vw,40px); }
+.podium-slot{ position:relative; background: linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.15); padding: 18px 14px 22px; border-radius:18px; box-shadow: 0 10px 28px -4px rgba(0,0,0,.55), 0 4px 0 0 rgba(255,255,255,.08) inset; }
+.podium-slot img{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:22%; box-shadow:0 8px 22px -6px rgba(0,0,0,.6); border:3px solid rgba(255,255,255,.25); background:#0a0f18; }
+.podium-slot.gold{ transform: translateY(-18%); }
+.podium-slot.silver{ transform: translateY(-6%); filter:brightness(.95); }
+.podium-slot.bronze{ transform: translateY(-0%); }
+.winner-card.podium{ max-width: 1180px; width:100%; }
+.podium-grid{ display:grid; grid-template-columns: 1fr 1.4fr 1fr; gap: clamp(18px,4vw,60px); align-items:end; margin-top: clamp(20px,3.5vw,50px); }
+.podium-slot img{ width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:24%; box-shadow:0 10px 28px -8px rgba(0,0,0,.55); border:4px solid rgba(255,255,255,.15); background:transparent; }
+.podium-slot.gold{ transform: translateY(-22%); }
+.podium-slot.silver{ transform: translateY(-8%); filter:brightness(.95); }
+.podium-slot.bronze{ transform: translateY(-2%); }
+.podium-slot.gold{ background: linear-gradient(180deg,rgba(255,220,120,.45),rgba(120,80,10,.3)); }
+.podium-slot.silver{ background: linear-gradient(180deg,rgba(220,228,240,.45),rgba(80,90,110,.28)); }
+.podium-slot.bronze{ background: linear-gradient(180deg,rgba(230,160,90,.42),rgba(120,60,20,.32)); }
+.podium-slot .p-rank{ position:absolute; top:8px; left:10px; font-weight:900; font-size:20px; opacity:.5; }
+.podium-slot .p-coins{ display:inline-flex; align-items:center; gap:8px; justify-content:center; margin-top:8px; color:#ffea9a; font-weight:900; font-size: clamp(1rem, 2.6vw, 1.8rem); text-shadow:0 6px 18px rgba(0,0,0,.45); }
+.podium-slot .p-coins .icon.coin{ width:22px; height:22px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35)); }
+.podium-slot.gold .p-coins.main{ font-size: clamp(1.2rem, 3vw, 2rem); }
+.podium-slot .p-name{ margin-top:10px; font-weight:700; font-size: clamp(.85rem,1.4vw,1.1rem); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.podium-slot.gold .p-name.main{ font-size: clamp(1.1rem,2vw,1.5rem); letter-spacing:-.01em; margin-top:14px; }
+.podium-slot .p-coins{ margin-top:6px; font-weight:600; color:#ffea9a; font-size: clamp(.9rem,1.6vw,1.2rem); }
+.winner-big{ aspect-ratio:1/1; }
+.w-heading{ font-size: clamp(1.2rem,2.5vw,2.2rem); font-weight:800; letter-spacing:.01em; opacity:.9; }
+.winner-card .w-heading{ position:relative; z-index:2; }
+.winner-card .main-title{ margin:0 0 clamp(18px,2.5vw,36px); font-size: clamp(1.6rem,3.2vw,3rem); text-shadow:0 6px 28px rgba(0,0,0,.6); }
+.podium-slot.gold{ box-shadow: 0 0 0 1px rgba(255,225,150,.5) inset, 0 0 22px 6px rgba(255,205,110,.35), 0 12px 28px -6px rgba(0,0,0,.55); position:relative; }
+.podium-slot.gold:after{ content:""; position:absolute; inset:-4px; border-radius:inherit; background: radial-gradient(circle at 50% 30%, rgba(255,230,150,.55), rgba(255,210,120,.15) 55%, rgba(255,200,100,0) 70%); mix-blend-mode:screen; pointer-events:none; animation: goldPulse 3.2s ease-in-out infinite; }
+@keyframes goldPulse{ 0%,100%{opacity:.9; transform:scale(1);} 50%{opacity:.55; transform:scale(1.03);} }
+.podium-slot.gold img{ animation: winnerFloat 5.2s ease-in-out infinite; }
+@keyframes winnerFloat{ 0%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} 100%{ transform:translateY(0);} }
+
+/* Light cone spotlight */
+.podium-slot.gold:before{ content:""; position:absolute; left:50%; top:-140%; width:180%; height:300%; transform:translateX(-50%); background: radial-gradient(circle at 50% 35%, rgba(255,235,160,.4), rgba(255,220,130,.08) 55%, rgba(255,200,110,0) 70%); filter:blur(18px); opacity:.55; pointer-events:none; }
+
+/* Flash beim Übergang zu FINAL */
+.final-flash{ position:absolute; inset:0; background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.9), rgba(255,255,255,0)); animation: finalFlash 0.9s ease-out; z-index:120; pointer-events:none; mix-blend-mode:screen; }
+@keyframes finalFlash{ 0%{opacity:0} 10%{opacity:1} 55%{opacity:.25} 100%{opacity:0} }
+.w-name{ font-size: clamp(2.4rem,5vw,4.2rem); font-weight:900; letter-spacing:-.02em; margin-top:.4em; text-shadow:0 8px 24px rgba(0,0,0,.5);} 
+.w-coins{ margin-top:.8em; font-size: clamp(1rem,2vw,1.6rem); font-weight:700; color:#ffea9a; }
+@keyframes winnerPop{ 0%{transform:scale(.6);opacity:0} 55%{transform:scale(1.05);opacity:1} 100%{transform:scale(1)} }
+
+/* ===== SB v2: Coin Rain / Pot Allocation ===== */
+.sb2-stage{ position:relative; width:min(1800px,98vw); height: min(92vh, 980px); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)); border:1px solid rgba(255,255,255,.06); border-radius:24px; box-shadow: 0 10px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.02); overflow:hidden; display:grid; place-items:center; perspective: 1200px; transform: rotateX(6deg); transform-origin: 50% 60%; }
+.sb2-canvas{ position:absolute; inset:0; pointer-events:none; }
+.sb2-stage .sb2-sky{ position:absolute; left:0; right:0; top:-12vh; height:12vh; pointer-events:none; z-index:2; }
+/* Use public/coin.png (user-provided) */
+.coin{ background: transparent; display:block; border:none; }
+.sky-coin{ position:absolute; width: clamp(40px, 4.8vmin, 50px); height: clamp(40px, 4.8vmin, 50px); background: transparent; filter: drop-shadow(0 6px 10px rgba(0,0,0,.24)); will-change: transform; z-index: 3; pointer-events: none; }
+.sky-coin.coin{ width: var(--coin, 50px); height:auto; background:transparent !important; border:0 !important; box-shadow:none !important; filter: drop-shadow(0 6px 10px rgba(0,0,0,.24)); pointer-events:none; }
+.sky-coin.dry{ filter: drop-shadow(0 10px 14px rgba(0,0,0,.25)) saturate(0) brightness(.8); }
+/* bag removed */
+.sb2-pot{ position:absolute; top: clamp(70px, 14vh, 220px); left:50%; transform:translateX(-50%); display:grid; place-items:center; gap:6px; color:#eaf1ff; text-shadow:0 6px 18px rgba(0,0,0,.45); }
+.sb2-pot-count{ font-size: clamp(1.4rem, 5vw, 3rem); font-weight:900; letter-spacing:-.02em; }
+.sb2-label{ font-weight:700; opacity:.85; letter-spacing:.12em; text-transform:uppercase; font-size:.8rem; }
+.sb2-pot-ring{ width:140px; height:140px; border-radius:50%; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.25), rgba(120,160,255,.12) 60%, rgba(120,160,255,0) 70%); box-shadow: 0 0 0 6px rgba(255,255,255,.06) inset, 0 10px 30px rgba(0,0,0,.35); filter: blur(.2px); animation: sb2Pulse 2.6s ease-in-out infinite; }
+@keyframes sb2Pulse { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.04);} }
+.sb2-teams{ position:absolute; bottom: clamp(24px, 6vh, 80px); left:0; right:0; display:flex; justify-content:center; gap: clamp(14px, 4vw, 60px); padding:0 clamp(18px, 3vw, 60px); }
+.sb2-teams .team-box{ position:relative; display:grid; place-items:center; gap:8px; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.10); border-radius:18px; padding: 12px 16px 14px; box-shadow: 0 8px 22px rgba(0,0,0,.35); min-width: 160px; overflow: visible; }
+.sb2-teams .team-box .avatar{ width:72px; height:72px; border-radius:50%; object-fit:cover; border:3px solid rgba(255,255,255,.16); box-shadow: 0 10px 22px rgba(0,0,0,.45); background:#0a0f18; }
+.sb2-teams .team-box .t-name{ font-weight:800; letter-spacing:.01em; max-width: 220px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sb2-teams .team-box .t-coins{ display:inline-flex; align-items:center; gap:8px; color:#ffea9a; font-weight:900; font-size: clamp(1rem, 2.4vw, 1.6rem); text-shadow:0 6px 18px rgba(0,0,0,.45); }
+.sb2-teams .team-box .t-coins .icon.coin{ width: 22px; height: 22px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35)); }
+.sb2-teams .team-box .t-coins.bump{ animation: coinsBump .26s cubic-bezier(.2,1.3,.3,1) both; }
+@keyframes coinsBump{ 0%{ transform: translateY(0) scale(1);} 50%{ transform: translateY(-2px) scale(1.06);} 100%{ transform: translateY(0) scale(1);} }
+.sb2-teams .team-box.leader{ box-shadow: 0 0 0 2px rgba(255,230,150,.5) inset, 0 0 22px 6px rgba(255,205,110,.35), 0 12px 28px -6px rgba(0,0,0,.55); }
+@media (max-width: 740px){ .sb2-teams{ gap: 16px; } .sb2-teams .team-box{ min-width: 120px; padding:10px 12px; } .sb2-teams .team-box .avatar{ width:64px; height:64px; } }
+
+/* Pile above avatar */
+.sb2-pile{
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  bottom: 118px;        /* Turm etwas näher am Avatar */
+  width: 120px;         /* schmal hält die Säule schlank */
+  height: 300px;        /* etwas höherer Puffer */
+  pointer-events:none;
+  transform-style: preserve-3d;
+  z-index: 2;
+}
+.sb2-coin{
+  position:absolute;
+  width: var(--coin, 50px); height:auto;
+  background:transparent !important;
+  border:0 !important; box-shadow:none !important;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.24));
+  transform-origin: 50% 50%;
+  transition: transform 220ms cubic-bezier(.22,.9,.25,1);
+  will-change: transform;
+  backface-visibility: hidden;
+  pointer-events:none; z-index:4;
+}
+.sb2-coin:last-child::after{ content:""; position:absolute; inset:-6%; background: radial-gradient(ellipse at 50% 35%, rgba(255,255,255,.28), transparent 55%); pointer-events:none; border-radius:50%; }
+.sb2-coin:after{ content:none; }
+.sb2-teams .team-box.wobble{ animation: sb2Wobble 100ms ease-out; }
+@keyframes sb2Wobble{ 0%{ transform: translateY(0) rotate(0); } 50%{ transform: translateY(-2px) rotate(-1deg); } 100%{ transform: translateY(0) rotate(0); } }
+.sb2-pile.sway{ animation: sb2Sway 3.8s ease-in-out infinite; }
+@keyframes sb2Sway{ 0%,100%{ transform: translateX(-50%) rotate(0);} 50%{ transform: translateX(-50%) rotate(2.2deg);} }
+.pile-badge{ position:absolute; top:-16px; right:8px; background:linear-gradient(180deg,#fff,#f1f5ff); color:#0f1421; font-weight:900; font-size:.8rem; padding:4px 8px; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.35); border:1px solid rgba(0,0,0,.06); }
+.pile-badge.pulse{ animation: pilePulse .7s ease-out; }
+@keyframes pilePulse{ 0%{ transform: scale(.9); } 60%{ transform: scale(1.08); } 100%{ transform: scale(1); } }
+.sb2-shadow{ position:absolute; width:110px; height:18px; bottom: 102px; left:50%; transform:translateX(-50%); background: radial-gradient(ellipse at center, rgba(0,0,0,.22), rgba(0,0,0,0)); filter: blur(3px); opacity:.28; pointer-events:none; transition: width .25s ease, opacity .25s ease; }
+/* Spark removed per request */
+/* Turn off any debug slot styling */
+.slot, .slot-debug{ outline:none !important; border:0 !important; background:transparent !important; }
+
+/* Edge-case note */
+.dry-note{ position:absolute; top:16px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.45); color:#eaf1ff; padding:6px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.08); z-index:6; backdrop-filter: blur(6px); }
+
+/* Compact control buttons for demo */
+.sb2-controls{ position:absolute; top:12px; right:12px; display:flex; gap:8px; z-index:5; }
+.sb2-controls .btn{ background:#1b2a3c; color:#eaf1ff; border:1px solid rgba(255,255,255,.1); padding:8px 10px; border-radius:10px; font-weight:700; font-size:.85rem; }
