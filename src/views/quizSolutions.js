@@ -141,7 +141,7 @@ export const BAER_ROUNDS = [
     question: 'Wie viele Stunden dauert der aktuell längste Nonstop-Passagierflug der Welt?',
     solution: 18 + 50 / 60, // 18 h 50 min
     unit: 'h',
-    solutionLabel: '≈ 18,8 h (18 h 50 min · Singapore Airlines · SIN–JFK)',
+    solutionLabel: '≈ 18,8 h (18 h 50 min  Singapore Airlines  SIN–JFK)',
   },
   {
     title: 'Anzahl Kindertagesstätten in Deutschland',
@@ -167,3 +167,4 @@ export default {
   FUCHS_SOLUTIONS,
   BAER_ROUNDS,
 };
+

@@ -1073,7 +1073,7 @@ function AdminView() {
   {/* Decide */}
   {phase === 'CATEGORY' && (
         <section className="card admin-decide full-span">
-          <h4>Sieger waehlen</h4>
+          <h4>Sieger wählen</h4>
           {isRoundLocked && (
             <div className="muted">Runde bereits gewertet</div>
           )}
@@ -1103,7 +1103,7 @@ function AdminView() {
                     <div className="winner-option__body">
                       <span className="winner-option__name">{t?.name}</span>
                       <span className="winner-option__hint">
-                        {checked ? 'Im Pot' : 'Antippen zum Auswaehlen'}
+                        {checked ? 'Im Pot' : 'Antippen zum Auswählen'}
                       </span>
                     </div>
                     {checked && <span className="winner-option__check" aria-hidden>&#10003;</span>}
@@ -1135,7 +1135,7 @@ function AdminView() {
             Payout/Runde: <b>{Math.floor((st?.categoryPot || 0) / 3)}</b> | Carry: <b>{st?.carryRound || 0}</b>
           </div>
           <div className="muted" style={{ fontSize: '.8rem' }}>
-            Mehrere Teams antippen und mit 'Pot verteilen' bestaetigen.
+            Mehrere Teams antippen und mit 'Pot verteilen' bestätigen.
           </div>
         </section>
       )}

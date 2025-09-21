@@ -347,7 +347,7 @@ function TeamLogin(){
                     className={`avatar-btn ${isSelected ? 'selected' : ''} ${disabled ? 'used' : ''}`}
                     disabled={disabled || slotsLeft === 0 || joining}
                     onClick={() => { if (!disabled) { setAvatar(a); setIdx(i); } }}
-                    aria-label={disabled ? 'Avatar belegt' : 'Avatar waehlen'}
+                    aria-label={disabled ? 'Avatar belegt' : 'Avatar wählen'}
                     aria-pressed={isSelected}
                   >
                     <span className={avatarFrameClass}>
