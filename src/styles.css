@@ -681,14 +681,14 @@ body[class*="cat-"] .card { z-index: 3; position: relative; }
 }
 .category-header .bank .stat .stat-num {
   font-weight: 900;
-  font-size: clamp(1.15rem, 1.0rem + 0.55vw, 1.6rem);
+  font-size: clamp(1.28rem, 1.04rem + 0.6vw, 1.8rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .category-header .bank .icon {
   display: inline-flex;
-  width: clamp(52px, 6vw, 72px);
-  height: clamp(52px, 6vw, 72px);
+  width: clamp(64px, 7vw, 92px);
+  height: clamp(64px, 7vw, 92px);
   transform: translateY(1px);
   transform-origin: center;
   filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));
