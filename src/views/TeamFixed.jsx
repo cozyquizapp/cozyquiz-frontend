@@ -532,6 +532,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   }, [me?.name, fallbackName, fixedId]);
   const coins = me?.coins ?? 0;
   const quizJoker = me?.quizJoker ?? 0;
+  const teamDisplayName = (me?.name || fallbackName || '').toString().trim() || 'Team';
 
   // Keep screen awake during game (Wake Lock API)
   const wakeLockRef = useRef(null);
@@ -1781,7 +1782,12 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       })()}
 
   {/* Kurze Pause Footer (fixiert unten in Lobby) */}
-  <LobbyPauseFooter visible={phase === 'LOBBY'} />
+  <LobbyPauseFooter
+    phase={phase}
+    teamName={teamDisplayName}
+    categoryName={cat}
+    roundIndex={Number.isFinite(roundIndex) ? roundIndex : undefined}
+  />
 
   {categorySummary && (()=>{
         const k = catKey(categorySummary.category);
@@ -2001,34 +2007,44 @@ function CategoryIntro({ k, name }){
   );
 }
 
-// Fixes Footer für Lobby: "Kurze Pause" animiert (wiederhergestellt)
-// Wird außerhalb des main-Content gerendert, damit Fun-Facts Overlay nicht verschoben wird.
-// Re-Use der bestehenden .lobby-title + .k-letter Animation.
-export function LobbyPauseFooter({ visible }) {
-  if (!visible) return null;
-  // Mit Ellipsen vorne & hinten (Punkte ebenfalls animiert)
-  const text = '... kurze Pause ...';
-  const chars = text.split('');
+// Status-Footer: Lobby zeigt "Kurze Pause", Runden zeigen Team & Fortschritt
+// Wird ausserhalb des main-Content gerendert, damit Overlays nicht verschoben werden.
+// Nutzt weiterhin die bestehende Lobby-Animation, ergaenzt um eine schmale Statusleiste.
+export function LobbyPauseFooter({ phase, teamName, categoryName, roundIndex }) {
+  const isLobby = phase === 'LOBBY';
+  const isRoundActive = phase === 'CATEGORY' || phase === 'STAKE';
+  if (!isLobby && !isRoundActive) return null;
+
+  if (isLobby) {
+    const text = '... kurze Pause ...';
+    const chars = text.split('');
+    return (
+      <footer className="pause-footer mode-lobby" aria-label="Kurze Pause" role="contentinfo">
+        <h3 className="lobby-title" aria-hidden>
+          {chars.map((ch, i) => (
+            ch === ' '
+              ? <span className="k-space" aria-hidden key={`s-${i}`}>&nbsp;</span>
+              : <span className="k-letter" style={{ '--i': i }} key={i}>{ch}</span>
+          ))}
+        </h3>
+      </footer>
+    );
+  }
+
+  const safeTeamName = (teamName || '').toString().trim() || 'Team';
+  const resolvedRoundIndex = Number.isFinite(roundIndex) ? roundIndex : null;
+  const roundNumber = resolvedRoundIndex !== null ? resolvedRoundIndex + 1 : null;
+  const labelCategory = (categoryName || '').toString().trim() || 'Kategorie';
+  const statusParts = [labelCategory];
+  if (roundNumber !== null) statusParts.push(`Runde ${roundNumber}`);
+  const statusText = statusParts.join(' \u00b7 ');
+
   return (
-    <footer className="pause-footer" aria-label="Kurze Pause" role="contentinfo">
-  <h3 className="lobby-title" aria-hidden>
-        {chars.map((ch, i) => (
-          ch === ' '
-            ? <span className="k-space" aria-hidden key={`s-${i}`}>&nbsp;</span>
-            : <span className="k-letter" style={{ '--i': i }} key={i}>{ch}</span>
-        ))}
-      </h3>
+    <footer className="pause-footer mode-game" aria-label="Rundenstatus" role="contentinfo">
+      <span className="footer-team" aria-label="Teamname">{safeTeamName}</span>
+      <span className="footer-divider" aria-hidden />
+      <span className="footer-status">{statusText}</span>
     </footer>
   );
 }
-
-
-
-
-
-
-
-
-
-
 

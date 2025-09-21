@@ -647,6 +647,92 @@ body[class*="cat-"] .card { z-index: 3; position: relative; }
   justify-content: center;
   pointer-events: none;
 }
+.pause-footer.mode-lobby { display: inline-flex; }
+
+.pause-footer.mode-game {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  width: min(82vw, 540px);
+  max-width: 640px;
+  padding: clamp(12px, 1.6vw, 18px) clamp(18px, 3vw, 30px);
+  border-radius: clamp(16px, 3vw, 26px);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(14,20,30,0.92), rgba(10,16,26,0.74));
+  box-shadow: 0 22px 48px -24px rgba(0,0,0,0.72);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.pause-footer.mode-game .footer-team {
+  font-size: clamp(0.9rem, 0.86rem + 0.28vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ebf1ff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  white-space: nowrap;
+}
+
+.pause-footer.mode-game .footer-status {
+  font-size: clamp(0.7rem, 0.66rem + 0.24vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(224,231,255,0.75);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pause-footer.mode-game .footer-divider {
+  flex: 0 0 1px;
+  align-self: stretch;
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.45), rgba(255,255,255,0));
+  opacity: 0.45;
+}
+
+@media (max-width: 620px) {
+  .pause-footer.mode-game {
+    flex-direction: column;
+    width: min(92vw, 360px);
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    padding: clamp(14px, 4vw, 20px) clamp(18px, 6vw, 26px);
+  }
+
+  .pause-footer.mode-game .footer-team,
+  .pause-footer.mode-game .footer-status {
+    white-space: normal;
+  }
+
+  .pause-footer.mode-game .footer-status {
+    letter-spacing: 0.12em;
+  }
+
+  .pause-footer.mode-game .footer-divider {
+    width: 60%;
+    height: 1px;
+    flex: 0 0 auto;
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.38), rgba(255,255,255,0));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pause-footer.mode-game {
+    animation: footerFadeIn 240ms var(--motion-ease-soft, cubic-bezier(.22,.9,.25,1)) 40ms both;
+  }
+}
+
+@keyframes footerFadeIn {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
 
 .lobby-title {
   display: inline-flex;
