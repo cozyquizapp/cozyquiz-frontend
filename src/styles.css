@@ -1714,6 +1714,14 @@ body.bg-category .app-shell.team-fixed .card small {
   .app-shell.team-fixed .bank .stat .icon { margin-right: 0; }
   .app-shell.team-fixed .bank .stat .stat-num { text-align: left; font-weight: 800; min-width: 24px; }
 }
+.app-shell.team-fixed .bank .icon {
+  width: clamp(70px, 20vw, 96px);
+  height: clamp(70px, 20vw, 96px);
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.32));
+}
+.app-shell.team-fixed .bank .stat .stat-num {
+  font-size: clamp(1.2rem, 0.9rem + 0.8vw, 1.8rem);
+}
 
 /* =========================
    BUZZ OVERLAY (ELCH)
