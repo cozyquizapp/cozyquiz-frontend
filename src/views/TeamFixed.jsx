@@ -22,7 +22,7 @@ if (typeof window !== 'undefined') {
   }
 }
 
-function Avatar({ src, size = 64 }) {
+function Avatar({ src, size = 64, className = '' }) {
   let finalSrc = null;
   if (typeof src === 'string') {
     // Ensure leading slash and png preference
@@ -30,9 +30,10 @@ function Avatar({ src, size = 64 }) {
   }
   if (finalSrc && /\/avatars\//.test(finalSrc)) {
     return (
-    <img
+      <img
         src={finalSrc}
         alt="avatar"
+        className={['avatar-img', className].filter(Boolean).join(' ')}
         style={{
           width: size + 10,
           height: size + 10,
@@ -934,7 +935,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             title={isReconnecting ? 'Reconnecting' : (isConnected ? 'Online' : 'Offline')}
             role="status"
           >
-            <Avatar src={assetUrl(me?.avatar ?? defaultAvatar)} />
+            <Avatar src={assetUrl(me?.avatar ?? defaultAvatar)} className="team-header-avatar" />
           </div>
           <div className="team-meta" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <div

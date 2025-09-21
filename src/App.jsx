@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import React from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
 import AdminView from './views/AdminView.jsx';
 import ScoreboardV2 from './views/ScoreboardV2.jsx';
 import TeamFixed from './views/TeamFixed.jsx';
@@ -7,6 +7,7 @@ import TeamLogin from './views/TeamLogin.jsx';
 import { useParams } from 'react-router-dom';
 import JoinPage from './routes/Join.jsx';
 import './styles.css';
+import { prefersReducedMotion } from './utils/motionPresets.js';
 
 class ErrorBoundary extends React.Component {
   constructor(p){ super(p); this.state={err:null}; }
@@ -36,10 +37,39 @@ function TeamDynamicWrapper(){
   );
 }
 
+function PageTransition({ children, locationKey }) {
+  const containerRef = useRef(null);
+  const firstRenderRef = useRef(true);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const node = containerRef.current;
+    if (!node) return;
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+      return;
+    }
+    node.classList.remove('page-transition-enter');
+    void node.offsetWidth;
+    node.classList.add('page-transition-enter');
+    return () => {
+      node.classList.remove('page-transition-enter');
+    };
+  }, [locationKey]);
+
+  return (
+    <div ref={containerRef} className="page-transition-shell">
+      {children}
+    </div>
+  );
+}
+
 export default function App() {
+  const location = useLocation();
   return (
     <ErrorBoundary>
-    <Routes>
+      <PageTransition locationKey={location.key}>
+        <Routes location={location}>
   <Route path="/" element={<Navigate to="/login" replace />} />
   <Route path="/login" element={<TeamLogin />} />
   <Route path="/join" element={<JoinPage />} />
@@ -80,7 +110,8 @@ export default function App() {
   <Route path="/scoreboard" element={<ScoreboardV2 />} />
   {/* Dynamic new team route */}
   <Route path="/team/:teamId" element={<TeamDynamicWrapper />} />
-    </Routes>
+        </Routes>
+      </PageTransition>
     </ErrorBoundary>
   );
 }
