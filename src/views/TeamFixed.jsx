@@ -6,11 +6,11 @@ import socket, { connectWithTeamId } from '../socket.v2';
 import assetUrl from '../utils/assetUrl';
 import catKey from '../utils/catKey';
 
-// Zusätzliche erlaubte Hosts (WLAN-IP hinzugefügt)
+// Zusï¿½tzliche erlaubte Hosts (WLAN-IP hinzugefï¿½gt)
 const ALLOWED_CLIENT_HOSTS = [
   'localhost',
   '127.0.0.1',
-  '192.168.5.117', // WLAN für Teilnehmer
+  '192.168.5.117', // WLAN fï¿½r Teilnehmer
 ];
 
 // Einmaliges Debug-Logging (optional)
@@ -65,7 +65,7 @@ const KRANICH_ROUNDS = [
     title: 'Social Media',
     items: ['TikTok', 'Facebook', 'Instagram', 'Twitter (X)'],
     categories: [
-      { id: 'gruendung', label: 'Gründungsjahr' },
+      { id: 'gruendung', label: 'Grï¿½ndungsjahr' },
       { id: 'posts', label: 'Posts pro Minute' },
       { id: 'maus', label: 'Monatlich aktive Nutzer' },
     ],
@@ -75,7 +75,7 @@ const KRANICH_ROUNDS = [
     items: ['Taylor Swift', 'Ed Sheeran', 'Billie Eilish', 'TheWeeknd'],
     categories: [
       { id: 'geburtsjahr', label: 'Geburtsjahr' },
-      { id: 'song', label: 'Meistgehörter Song (Spotify)'},
+      { id: 'song', label: 'Meistgehï¿½rter Song (Spotify)'},
       { id: 'ig', label: 'Instagram-Follower' },
     ],
   },
@@ -95,15 +95,16 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
   const cat = st?.currentCategory;
   const roundIndex = Number(st?.roundIndex || 0);
-  // Phase + RoundKey müssen vor erstem Gebrauch definiert sein (TDZ fix)
+  // Phase + RoundKey mï¿½ssen vor erstem Gebrauch definiert sein (TDZ fix)
   const phase = st?.phase || 'LOBBY';
   const roundKey = `${st?.currentCategory || 'NONE'}#${st?.roundIndex || 0}#${st?.phase}`;
+  const roundResolved = !!st?.roundResolved;
 
-  // FEHLTE: State für das letzte Ergebnis und den Key
+  // FEHLTE: State fï¿½r das letzte Ergebnis und den Key
   const [lastResult, setLastResult] = useState(null);
   const lastResultKey = useRef('');
 
-  // Einsätze
+  // Einsï¿½tze
   const [stake, setStake] = useState(0);
   const [stakeSent, setStakeSent] = useState(false);
   const [useJoker, setUseJoker] = useState(false);
@@ -169,7 +170,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   // Wal
   const [walBid, setWalBid] = useState(0);
 
-  // Bär
+  // Bï¿½r
   const [baer, setBaer] = useState('');
 
   // Fuchs
@@ -178,6 +179,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   // Submission lock + optional edit mode (per aktiver Kategorie/Runde)
   const [editMode, setEditMode] = useState(false);
   useEffect(()=>{ setEditMode(false); }, [roundKey]);
+  useEffect(()=>{ if(roundResolved) setEditMode(false); }, [roundResolved]);
   // Reset timer state when round/category key changes
   useEffect(()=>{
     if(timerRoundKeyRef.current !== roundKey){
@@ -187,7 +189,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
   }, [roundKey]);
 
-  // Erkennen ob schon etwas für aktuelle Kategorie abgegeben wurde
+  // Erkennen ob schon etwas fï¿½r aktuelle Kategorie abgegeben wurde
   const mySub = (st && st.submissions && typeof st.submissions === 'object') ? (st.submissions[fixedId] || {}) : {};
   const hasSubmitted = useMemo(()=>{
     if (phase !== 'CATEGORY') return false;
@@ -201,20 +203,20 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         if (roundIndex === 2) return Array.isArray(mySub.r4) && mySub.r4.some(a=>a && a.trim());
         return false;
       case 'Wal':    return typeof mySub.bid === 'number';
-      case 'Bär':    return typeof mySub.estimate === 'number';
+      case 'Bï¿½r':    return typeof mySub.estimate === 'number';
       case 'Fuchs':  return typeof mySub.guess === 'string' && mySub.guess.trim().length>0;
       default: return false;
     }
   }, [phase, cat, mySub, roundIndex]);
-  const submissionLocked = hasSubmitted && !editMode; // UI sperren
+  const submissionLocked = roundResolved || (hasSubmitted && !editMode); // UI sperren
   const sendLabel = editMode ? 'Aktualisieren' : (hasSubmitted ? 'Gesendet' : 'Senden');
 
-  // Timer – lokales Ticken
-  // Ref für haptisches Feedback bei "Zu spät" (Buzz zu spät)
+  // Timer ï¿½ lokales Ticken
+  // Ref fï¿½r haptisches Feedback bei "Zu spï¿½t" (Buzz zu spï¿½t)
   const zuSpaetRef = useRef(false);
   // Debounce multiple buzz emits on mobile
   const buzzLockRef = useRef(false);
-  // Haptisches Feedback bei "Zu spät" (locked, nicht myBuzz, nur Elch)
+  // Haptisches Feedback bei "Zu spï¿½t" (locked, nicht myBuzz, nur Elch)
   useEffect(() => {
     if (st?.currentCategory === 'Elch') {
       const el = st?.elch;
@@ -232,7 +234,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const [now, setNow] = useState(Date.now());
   const [timerWasActive, setTimerWasActive] = useState(false);
   const timerRoundKeyRef = useRef('');
-  // NEU: Pause-Status für Team-Ansicht
+  // NEU: Pause-Status fï¿½r Team-Ansicht
   const [pausedAt, setPausedAt] = useState(null);
   // Header elevation on scroll
   useEffect(() => {
@@ -261,48 +263,48 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const FUN_FACTS = useRef([
     // 80er-Motto
     '80er-Style: Schulterpolster und Neonfarben - je knalliger, desto besser!',
-    'Walkman-Zeit: Mixtapes to go – Kopfhörer wurden zum Accessoire.',
-    'Haar-Ikonen: Vokuhila und Föhnfrisuren – Haarsprayverbrauch auf Rekordniveau.',
-    'Aerobic-Look: Leggings, Stirnbänder und Trainingsanzüge prägten die Streetwear.',
+    'Walkman-Zeit: Mixtapes to go ï¿½ Kopfhï¿½rer wurden zum Accessoire.',
+    'Haar-Ikonen: Vokuhila und Fï¿½hnfrisuren ï¿½ Haarsprayverbrauch auf Rekordniveau.',
+    'Aerobic-Look: Leggings, Stirnbï¿½nder und Trainingsanzï¿½ge prï¿½gten die Streetwear.',
     // Arendal & Umgebung
-  { text: 'Arendal liegt an der Südküste Norwegens (Agder) am Skagerrak.', img: '/funfacts/arendal.jpg', alt: 'Blick auf Arendal an der Südküste Norwegens' },
-  { text: 'Die Altstadt rund um den Hafen „Pollen“ ist für Holzhäuser und Cafés bekannt.', img: '/funfacts/Arendal_Pollen.png', alt: 'Holzhäuser und Cafés am Hafen Pollen in Arendal' },
-  { text: 'Jeden August: „Arendalsuka“ – Norwegens große Demokratie-/Politik-Woche.', img: '/funfacts/arendalsuka.jpg', alt: 'Menschen und Stände bei der Arendalsuka' },
-  { text: 'Tromøy & Hisøy: Insel-Feeling – Hove ist ein Top-Ausflugsziel.', img: '/funfacts/stranhove.jpg', alt: 'Strand Hove auf einer der Inseln bei Arendal' },
-  { text: 'Arendal war im 19. Jh. ein wichtiges Zentrum für Segelschifffahrt.', img: '/funfacts/historic.png', alt: 'Historisches Segelschiff / maritime Szene in Arendal' },
-  { text: 'Der Fluss Nidelva mündet hier ins Meer – perfekt für Kajak & SUP.', img: '/funfacts/sup.png', alt: 'SUP oder Kajak auf dem Nidelva vor Arendal' },
+  { text: 'Arendal liegt an der Sï¿½dkï¿½ste Norwegens (Agder) am Skagerrak.', img: '/funfacts/arendal.jpg', alt: 'Blick auf Arendal an der Sï¿½dkï¿½ste Norwegens' },
+  { text: 'Die Altstadt rund um den Hafen ï¿½Pollenï¿½ ist fï¿½r Holzhï¿½user und Cafï¿½s bekannt.', img: '/funfacts/Arendal_Pollen.png', alt: 'Holzhï¿½user und Cafï¿½s am Hafen Pollen in Arendal' },
+  { text: 'Jeden August: ï¿½Arendalsukaï¿½ ï¿½ Norwegens groï¿½e Demokratie-/Politik-Woche.', img: '/funfacts/arendalsuka.jpg', alt: 'Menschen und Stï¿½nde bei der Arendalsuka' },
+  { text: 'Tromï¿½y & Hisï¿½y: Insel-Feeling ï¿½ Hove ist ein Top-Ausflugsziel.', img: '/funfacts/stranhove.jpg', alt: 'Strand Hove auf einer der Inseln bei Arendal' },
+  { text: 'Arendal war im 19. Jh. ein wichtiges Zentrum fï¿½r Segelschifffahrt.', img: '/funfacts/historic.png', alt: 'Historisches Segelschiff / maritime Szene in Arendal' },
+  { text: 'Der Fluss Nidelva mï¿½ndet hier ins Meer ï¿½ perfekt fï¿½r Kajak & SUP.', img: '/funfacts/sup.png', alt: 'SUP oder Kajak auf dem Nidelva vor Arendal' },
     // Spielerisch / Humor
     'Hier sagt man: Das Team mit dem besten Outfit holt den Style-Pokal. ??',
-    'Johannes ist objektiv der beste Moderator – steht so im Skript. ??',
+    'Johannes ist objektiv der beste Moderator ï¿½ steht so im Skript. ??',
     'Fun Fact: 100% der Gewinnerteams hatten heute bereits Wasser getrunken. ??',
-    'Gerücht: Wer während der Pause tief durchatmet, erhöht die Punktzahl um +0 (aber fühlt sich besser).',
-    'Studien sagen: High-Five erhöht kurzfristig die Team-Synchronität um 8%. ?',
+    'Gerï¿½cht: Wer wï¿½hrend der Pause tief durchatmet, erhï¿½ht die Punktzahl um +0 (aber fï¿½hlt sich besser).',
+    'Studien sagen: High-Five erhï¿½ht kurzfristig die Team-Synchronitï¿½t um 8%. ?',
     'Kurze Pause = Gehirn-Refresh. Schon Blinzeln bringt Mini-Reboot.',
   // animal-related facts removed (Wal, Fuchs)
-  'Micro-Pause: Schultern hoch – halten – loslassen. Mini-Reset.',
-  'Wer summt, reguliert Stress. Summen zählt als Strategie. ??',
+  'Micro-Pause: Schultern hoch ï¿½ halten ï¿½ loslassen. Mini-Reset.',
+  'Wer summt, reguliert Stress. Summen zï¿½hlt als Strategie. ??',
   'Fun Fact: Teams mit klaren Rollen spielen oft ruhiger.',
-  '„Ich hab da eine Theorie…“ – berühmte letzte Worte vor Plot-Twist.',
+  'ï¿½Ich hab da eine Theorieï¿½ï¿½ ï¿½ berï¿½hmte letzte Worte vor Plot-Twist.',
   'Die meisten spontanen Ideen kommen Sekunden NACH einem kurzem Blick weg vom Screen.',
-  'Rainbow-Trivia: In Norwegen sieht man häufig Doppelregenbögen – extra Glück? ??',
-  'Wer laut gewinnt, gewinnt doppelt (gefühlt).',
-  // removed: 'Legend says: Saying "Wal" zu ernst löst mystische Kräfte aus.'
-  'Brain-Boost: Tief ein – 4s halten – 6s aus. Parasympathikus aktiviert.',
+  'Rainbow-Trivia: In Norwegen sieht man hï¿½ufig Doppelregenbï¿½gen ï¿½ extra Glï¿½ck? ??',
+  'Wer laut gewinnt, gewinnt doppelt (gefï¿½hlt).',
+  // removed: 'Legend says: Saying "Wal" zu ernst lï¿½st mystische Krï¿½fte aus.'
+  'Brain-Boost: Tief ein ï¿½ 4s halten ï¿½ 6s aus. Parasympathikus aktiviert.',
   'Wenn ihr diesen Fact nochmal seht: Gratulation, ihr habt das Loop-Ei gefunden.',
-  // Beispiel mit Bild (füge eigene Dateien in /funfacts/ hinzu)
-  { text: 'Arendal Hafen – historische Holzfassaden und Segelgeschichte live.', img: '/funfacts/hafen.jpg', alt: 'Hafen von Arendal mit Booten' },
-  { text: 'Typischer norwegischer Schärengarten bei Abendlicht – ruhig & weit.', img: '/funfacts/schaereninsel.jpg', alt: 'Schäreninsel bei Abendlicht' },
-  // Neue Bild-Facts (zusätzliche Einträge)
+  // Beispiel mit Bild (fï¿½ge eigene Dateien in /funfacts/ hinzu)
+  { text: 'Arendal Hafen ï¿½ historische Holzfassaden und Segelgeschichte live.', img: '/funfacts/hafen.jpg', alt: 'Hafen von Arendal mit Booten' },
+  { text: 'Typischer norwegischer Schï¿½rengarten bei Abendlicht ï¿½ ruhig & weit.', img: '/funfacts/schaereninsel.jpg', alt: 'Schï¿½reninsel bei Abendlicht' },
+  // Neue Bild-Facts (zusï¿½tzliche Eintrï¿½ge)
   { text: '80er-Style: Schulterpolster und Neonfarben - je knalliger, desto besser!', img: '/funfacts/80er-style.jpg', alt: '80er-Style mit Neonfarben und Schulterpolstern' },
-  { text: 'Walkman-Zeit: Mixtapes to go - Kopfhörer wurden zum Accessoire.', img: '/funfacts/walkman.jpg', alt: 'Walkman und Kopfhörer als Accessoire' },
-  { text: 'Haar-Ikonen: Vokuhila und Föhnfrisuren - Haarsprayverbrauch auf Rekordniveau.', img: '/funfacts/Frisuren.png', alt: '80er-Jahre Frisuren und Vokuhila' },
-  { text: 'Aerobic-Look: Leggings, Stirnbänder und Trainingsanzüge prägten die Streetwear.', img: '/funfacts/aerobic.png', alt: 'Aerobic-Look mit Leggings und Stirnband' },
+  { text: 'Walkman-Zeit: Mixtapes to go - Kopfhï¿½rer wurden zum Accessoire.', img: '/funfacts/walkman.jpg', alt: 'Walkman und Kopfhï¿½rer als Accessoire' },
+  { text: 'Haar-Ikonen: Vokuhila und Fï¿½hnfrisuren - Haarsprayverbrauch auf Rekordniveau.', img: '/funfacts/Frisuren.png', alt: '80er-Jahre Frisuren und Vokuhila' },
+  { text: 'Aerobic-Look: Leggings, Stirnbï¿½nder und Trainingsanzï¿½ge prï¿½gten die Streetwear.', img: '/funfacts/aerobic.png', alt: 'Aerobic-Look mit Leggings und Stirnband' },
   { text: 'Kaffeefakt: Geruch allein kann Aufmerksamkeit kurz steigern.', img: '/funfacts/kaffee.png', webp: '/funfacts/kaffee.webp', avif: '/funfacts/kaffee.avif', alt: 'Tasse Kaffee, Duft steigt auf' },
-  { text: 'Rainbow-Trivia: In Norwegen sieht man häufig Doppelregenbögen - extra Glück?', img: '/funfacts/doppelregenbogen.jpg', alt: 'Doppelregenbogen am Himmel' },
+  { text: 'Rainbow-Trivia: In Norwegen sieht man hï¿½ufig Doppelregenbï¿½gen - extra Glï¿½ck?', img: '/funfacts/doppelregenbogen.jpg', alt: 'Doppelregenbogen am Himmel' },
   // Drei kleine Witze als Fun-Facts (auf Wunsch, mit Quelle)
-  'Witz: Warum können Geister so schlecht lügen? Weil man durch sie hindurchsieht. - ChatGPT',
-  'Witz: Ich habe einen Witz über Zeitreisen, aber du mochtest ihn gestern schon. - ChatGPT',
-  'Witz: Warum hat der Computer eine Brille? Weil er seine Windows nicht schließen kann. - ChatGPT',
+  'Witz: Warum kï¿½nnen Geister so schlecht lï¿½gen? Weil man durch sie hindurchsieht. - ChatGPT',
+  'Witz: Ich habe einen Witz ï¿½ber Zeitreisen, aber du mochtest ihn gestern schon. - ChatGPT',
+  'Witz: Warum hat der Computer eine Brille? Weil er seine Windows nicht schlieï¿½en kann. - ChatGPT',
   ]).current;
   const [showFacts, setShowFacts] = useState(true);
   const [factIdx, setFactIdx] = useState(0);
@@ -400,12 +402,12 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     };
     const onTeams = (list) => {
       setTeams(list);
-      // Initial-Join nur ausführen, wenn Team noch nicht existiert (z. B. direkter Aufruf der Team-URL)
+      // Initial-Join nur ausfï¿½hren, wenn Team noch nicht existiert (z. B. direkter Aufruf der Team-URL)
       if (!didInitJoinRef.current) {
         const exists = Array.isArray(list) && list.some(t => t.id === fixedId);
         if (!exists) {
           didInitJoinRef.current = true;
-          // Versuche, gespeicherte Session zu nutzen (bewahrt gewählten Avatar/Name)
+          // Versuche, gespeicherte Session zu nutzen (bewahrt gewï¿½hlten Avatar/Name)
           let stored = null;
           try { stored = JSON.parse(localStorage.getItem('teamSession')||'null'); } catch {}
           if (stored && stored.id === fixedId) {
@@ -418,7 +420,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       }
     };
 
-    // Ergebnis direkt empfangen und in den State eintragen (robust für verschiedene Strukturen)
+    // Ergebnis direkt empfangen und in den State eintragen (robust fï¿½r verschiedene Strukturen)
     const onResultAnnounce = (result) => {
       // Debug: Zeige das empfangene Ergebnisobjekt in der Konsole
       console.log('[result:announce]', result);
@@ -484,7 +486,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     s.io.on('reconnect', onReconnect);
     s.on('connect_error', onConnectError);
 
-    // Initialen State/Teams anfordern; Join wird (falls nötig) im onTeams-Handler erledigt
+    // Initialen State/Teams anfordern; Join wird (falls nï¿½tig) im onTeams-Handler erledigt
     s.emit('requestState');
     s.emit('requestTeams');
 
@@ -503,7 +505,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     };
   }, [fixedId, defaultName, defaultAvatar]);
 
-  // NEU: lastResult zurücksetzen, wenn Runde/Kategorie wechselt
+  // NEU: lastResult zurï¿½cksetzen, wenn Runde/Kategorie wechselt
   useEffect(() => {
     const key = `${cat}#${roundIndex}`;
     if (lastResultKey.current !== key) {
@@ -516,7 +518,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   }, [cat, roundIndex]);
 
   const me = useMemo(() => teams.find((t) => t.id === fixedId), [teams, fixedId]);
-  // Fallback: falls Team noch nicht über teamsUpdated da ist, versuche gespeicherten Namen
+  // Fallback: falls Team noch nicht ï¿½ber teamsUpdated da ist, versuche gespeicherten Namen
   let fallbackName = defaultName;
   if(!me){
     try {
@@ -524,7 +526,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       if(stored) fallbackName = stored;
     } catch {}
   }
-  // Debug: Auflösung des Team-Namens beobachten
+  // Debug: Auflï¿½sung des Team-Namens beobachten
   useEffect(() => {
     try {
       console.debug('[TeamFixed] name resolve', { fixedId, meName: me?.name, fallbackName });
@@ -620,7 +622,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
   const displayCatName = (c) => {
     if (!c) return c;
-    if (c === 'B??r' || c === 'Baer') return 'Bär';
+    if (c === 'B??r' || c === 'Baer') return 'Bï¿½r';
     return c;
   };
 
@@ -687,7 +689,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         setPausedAt({ remaining: pausedRemaining });
       }
     } else {
-      // Wenn Timer wieder läuft, Pause aufheben
+      // Wenn Timer wieder lï¿½uft, Pause aufheben
       if (endsAt && endsAt > now && pausedAt) setPausedAt(null);
       // Wenn Phase wechselt, Pause aufheben
       if (st?.phase !== 'CATEGORY' && pausedAt) setPausedAt(null);
@@ -716,7 +718,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       order: kranichOrder,
     });
 
-  // Eule submit – Mapping: 0?r1, 1?r3, 2?r4
+  // Eule submit ï¿½ Mapping: 0?r1, 1?r3, 2?r4
   const euleSubmit = () => {
     if (roundIndex === 0) {
       socket.emit('team:eule:submit', { r1: euleRound1 });
@@ -729,14 +731,14 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
   };
 
-  // Hilfsfunktion: Hole das Ergebnis-Objekt für die aktuelle Kategorie/Runde (robust für alle Strukturen)
+  // Hilfsfunktion: Hole das Ergebnis-Objekt fï¿½r die aktuelle Kategorie/Runde (robust fï¿½r alle Strukturen)
   function getCurrentResult() {
     // Zuerst: lastResult, falls passend
     if (lastResult && lastResult.category === cat && lastResult.roundIndex === roundIndex) {
       return lastResult;
     }
     if (!st) return null;
-    // 1. Suche nach st.results als Objekt mit Kategorie-Schlüssel
+    // 1. Suche nach st.results als Objekt mit Kategorie-Schlï¿½ssel
     if (st.results && typeof st.results === 'object' && cat && st.results[cat]) {
       if (Array.isArray(st.results[cat])) {
         return st.results[cat][roundIndex] || null;
@@ -751,7 +753,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
     // 3. Suche nach st.result (Fallback)
     if (st.result && st.result.category === cat) return st.result;
-    // 4. Fallback: Suche nach einem Ergebnisobjekt, das winnerId für mein Team enthält
+    // 4. Fallback: Suche nach einem Ergebnisobjekt, das winnerId fï¿½r mein Team enthï¿½lt
     if (st.results && typeof st.results === 'object') {
       for (const key in st.results) {
         const entry = st.results[key];
@@ -781,16 +783,16 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     return null;
   })();
 
-  // Rückmeldungstexte für jede Kategorie
+  // Rï¿½ckmeldungstexte fï¿½r jede Kategorie
   const resultFeedback = useMemo(() => {
-    // Zeige Feedback, sobald ein Gewinner existiert (unabhängig von phase)
+    // Zeige Feedback, sobald ein Gewinner existiert (unabhï¿½ngig von phase)
     if (didMyTeamWin == null) return null;
     let msg = '';
     let emoji = didMyTeamWin ? '??' : '??';
     switch (cat) {
       case 'Hase':
         msg = didMyTeamWin
-          ? 'Glückwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
+          ? 'Glï¿½ckwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
           : 'Leider hat das andere Team diese Hase-Runde gewonnen.';
         break;
       case 'Kranich':
@@ -818,10 +820,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
           ? 'Ihr wart beim Elch am schnellsten und habt den Punkt geholt!'
           : 'Das andere Team war beim Elch schneller.';
         break;
-      case 'Bär':
+      case 'Bï¿½r':
         msg = didMyTeamWin
-          ? 'Sehr gut! Ihr habt die Bär-Runde gewonnen und den Punkt erhalten.'
-          : 'Das andere Team war bei Bär näher dran.';
+          ? 'Sehr gut! Ihr habt die Bï¿½r-Runde gewonnen und den Punkt erhalten.'
+          : 'Das andere Team war bei Bï¿½r nï¿½her dran.';
         break;
       case 'Fuchs':
         msg = didMyTeamWin
@@ -910,7 +912,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     });
   };
 
-  // ————— RENDER —————
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ RENDER ï¿½ï¿½ï¿½ï¿½ï¿½
   const [entered, setEntered] = useState(false);
   useEffect(()=>{ const id = requestAnimationFrame(()=> setEntered(true)); return ()=> cancelAnimationFrame(id); }, []);
   return (
@@ -952,7 +954,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 line = 'Lobby';
               } else if (p === 'CATEGORY') {
                 const r = Number(st?.roundIndex || 0) + 1;
-                line = `${catName || ''} · Runde ${r}/3`;
+                line = `${catName || ''} ï¿½ Runde ${r}/3`;
               } else if (p === 'STAKE') {
                 line = catName || '';
               }
@@ -974,7 +976,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   src={`/categories/${k}.png`}
                   alt={`${st.currentCategory} icon`}
                   onError={(e) => {
-                    // PNG zuerst versuchen, dann auf SVG zurückfallen
+                    // PNG zuerst versuchen, dann auf SVG zurï¿½ckfallen
                     if (!e.currentTarget.dataset.fallbackSvg) {
                       e.currentTarget.dataset.fallbackSvg = '1';
                       e.currentTarget.onerror = null;
@@ -1031,7 +1033,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {phase === 'STAKE' && (
           <section className={`card stake-section ${stakeSent ? 'sent' : ''}`}>
             <div className="stake-content">
-              <h3 className="stake-title">Einsatz wählen</h3>
+              <h3 className="stake-title">Einsatz wï¿½hlen</h3>
               <div className="stake-grid">
                 <button
                   className={`btn stake-btn ${stake === 3 ? 'btn-primary selected' : ''}`}
@@ -1086,8 +1088,8 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </button>
                 <div className="muted stake-joker-hint" style={{ fontSize: '.95rem', fontWeight: 700, textAlign:'center' }}>
                   {quizJoker > 0
-                    ? (useJoker ? 'Jokerin aktiviert' : 'Jokerin verfügbar – tippe zum Aktivieren')
-                    : 'Keine Jokerin verfügbar'}
+                    ? (useJoker ? 'Jokerin aktiviert' : 'Jokerin verfï¿½gbar ï¿½ tippe zum Aktivieren')
+                    : 'Keine Jokerin verfï¿½gbar'}
                 </div>
               </div>
             )}
@@ -1100,7 +1102,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Hase */}
     {phase === 'CATEGORY' && cat === 'Hase' && (
           <section className="card">
-      <h3>Hase – Runde {Number(roundIndex) + 1}</h3>
+      <h3>Hase ï¿½ Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1135,7 +1137,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 onClick={() => { socket.emit('team:hase:submit', { answers: haseAns }); if(!editMode) setEditMode(false); }}
                 disabled={inputLocked || submissionLocked}
               >{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>
                   {editMode ? 'Fertig' : 'Bearbeiten'}
                 </button>
@@ -1147,7 +1149,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Kranich */}
         {phase === 'CATEGORY' && cat === 'Kranich' && (
           <section className="card">
-            <h3>Kranich – {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
+            <h3>Kranich ï¿½ {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1192,7 +1194,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   onTouchMove={onTouchMoveRow(i)}
                   onTouchEnd={onTouchEndRow}
                 >
-                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wählen / Reihenfolge anpassen</span>}</div>
+                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wï¿½hlen / Reihenfolge anpassen</span>}</div>
                   <div className="row">
                     <button className="btn" disabled={i === 0} onClick={() => moveUp(i)}>
                       ?
@@ -1211,7 +1213,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={kranichSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1221,7 +1223,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Robbe */}
     {phase === 'CATEGORY' && cat === 'Robbe' && (
           <section className="card">
-      <h3>Robbe – Runde {Number(roundIndex) + 1}</h3>
+      <h3>Robbe ï¿½ Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1250,7 +1252,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             ))}
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:robbe:submit', { perc: robbe })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1260,7 +1262,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Eule */}
     {phase === 'CATEGORY' && cat === 'Eule' && (
           <section className="card">
-      <h3>Eule – Runde {Number(roundIndex) + 1}</h3>
+      <h3>Eule ï¿½ Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1271,7 +1273,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             {roundIndex === 0 && (
               <>
                 <p className="muted" style={{ marginTop: -6 }}>
-                  Nenne so viele Animationsfilme wie möglich (bis zu 15).
+                  Nenne so viele Animationsfilme wie mï¿½glich (bis zu 15).
                 </p>
                 <div className="grid3">
                   {euleRound1.map((v, i) => (
@@ -1294,7 +1296,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </div>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-                  {hasSubmitted && !inputLocked && (
+                  {hasSubmitted && !inputLocked && !roundResolved && (
                     <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
                   )}
                 </div>
@@ -1327,7 +1329,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </div>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-                  {hasSubmitted && !inputLocked && (
+                  {hasSubmitted && !inputLocked && !roundResolved && (
                     <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
                   )}
                 </div>
@@ -1360,7 +1362,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </div>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-                  {hasSubmitted && !inputLocked && (
+                  {hasSubmitted && !inputLocked && !roundResolved && (
                     <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
                   )}
                 </div>
@@ -1372,7 +1374,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Wal */}
     {phase === 'CATEGORY' && cat === 'Wal' && (
           <section className="card">
-      <h3>Wal – Runde {Number(roundIndex) + 1}</h3>
+      <h3>Wal ï¿½ Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1391,14 +1393,14 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             />
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:wal:submit', { bid: Number(walBid) || 0 })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
           </section>
         )}
 
-        {/* ——— ELCH ——— */}
+        {/* ï¿½ï¿½ï¿½ ELCH ï¿½ï¿½ï¿½ */}
         {phase === 'CATEGORY' && cat === 'Elch' && (
           <>
     {/* Floating timer rendered via portal; only while running (hide on stop) */}
@@ -1424,7 +1426,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               document.body
             )}
             <section className="card" data-elch-panel style={{ position:'relative' }}>
-              <h3>Elch – Runde {Number(roundIndex) + 1}</h3>
+              <h3>Elch ï¿½ Runde {Number(roundIndex) + 1}</h3>
               {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
                 <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                   <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1433,7 +1435,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               )}
               {(st?.elch?.category || st?.elch?.exhausted) && (
                 <div className="muted" style={{ marginTop: -6, textAlign:'center', width:'100%', fontSize:'1rem', fontWeight:700 }}>
-                  {st?.elch?.category || '— Pool erschöpft —'}
+                  {st?.elch?.category || 'ï¿½ Pool erschï¿½pft ï¿½'}
                 </div>
               )}
               <div className="muted" style={{ marginTop: 12, textAlign:'center' }}>
@@ -1443,7 +1445,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                       ? 'Warten bis Sprache gezogen.' // Placeholder ohne "Admin" Wortlaut
                       : (() => {
                           const myBuzz = Array.isArray(st?.elch?.buzzOrder) && st.elch.buzzOrder.some(b => b.teamId === fixedId);
-                          if (myBuzz) return 'Du hast gebuzzert – warte auf Entscheidung.';
+                          if (myBuzz) return 'Du hast gebuzzert ï¿½ warte auf Entscheidung.';
                           if (st?.elch?.buzzLocked) return 'Ein anderes Team war schneller.';
                           return 'Buzz ist frei.';
                         })()
@@ -1458,15 +1460,15 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               const myBuzz = Array.isArray(el?.buzzOrder) && el.buzzOrder.some(b => b.teamId === fixedId);
               const cls = `buzz-overlay ${locked ? 'buzz-locked' : 'buzz-free'}${myBuzz ? ' buzz-own' : ''}`;
               // Kompakte, kleingeschriebene Labels direkt unter dem Buzz-Icon
-              const label = !locked ? 'buzz' : (myBuzz ? 'dran' : 'zu spät');
-              // Buzzer soll unabhängig vom allgemeinen Eingabe-Lock funktionieren
+              const label = !locked ? 'buzz' : (myBuzz ? 'dran' : 'zu spï¿½t');
+              // Buzzer soll unabhï¿½ngig vom allgemeinen Eingabe-Lock funktionieren
               // (z. B. wenn in derselben Runde erneut eine Sprache gezogen wird)
               const canBuzz = !locked && !myBuzz;
               return (
                 <div
                   className={cls}
                   role="button"
-                  aria-label={canBuzz ? 'Buzz drücken' : 'Buzz gesperrt'}
+                  aria-label={canBuzz ? 'Buzz drï¿½cken' : 'Buzz gesperrt'}
                   tabIndex={0}
                   onPointerDown={(e) => {
                     // Prefer immediate pointer reaction on mobile
@@ -1479,7 +1481,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                     }
                   }}
                   onTouchStart={(e) => {
-                    // iOS/Safari fallback – ensure touch triggers buzz
+                    // iOS/Safari fallback ï¿½ ensure touch triggers buzz
                     if (canBuzz && !buzzLockRef.current) {
                       buzzLockRef.current = true;
                       try { e.preventDefault(); e.stopPropagation(); } catch {}
@@ -1491,7 +1493,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   onClick={() => {
                     if (canBuzz && !buzzLockRef.current) {
                       buzzLockRef.current = true;
-                      // Vibrationsfeedback (falls unterstützt)
+                      // Vibrationsfeedback (falls unterstï¿½tzt)
                       try { navigator.vibrate && navigator.vibrate([15, 40, 25]); } catch {}
                       socket.emit('team:elch:buzz');
                       setTimeout(()=>{ buzzLockRef.current = false; }, 600);
@@ -1539,10 +1541,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
           </>
         )}
 
-        {/* Bär */}
-  {phase === 'CATEGORY' && cat === 'Bär' && (
+        {/* Bï¿½r */}
+  {phase === 'CATEGORY' && cat === 'Bï¿½r' && (
           <section className="card">
-            <h3>Bär – Runde {Number(roundIndex) + 1}</h3>
+            <h3>Bï¿½r ï¿½ Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1553,21 +1555,21 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             {/* Runden-Hinweis */}
             {roundIndex === 0 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                Schätze die Flugdauer in <b>Stunden (Dezimal)</b>.
+                Schï¿½tze die Flugdauer in <b>Stunden (Dezimal)</b>.
               </p>
             )}
             {roundIndex === 1 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                Schätze die Anzahl Kitas in Deutschland.
+                Schï¿½tze die Anzahl Kitas in Deutschland.
               </p>
             )}
             {roundIndex === 2 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                Schätze die Höhe des höchsten Wolkenkratzers in <b>Metern</b>.
+                Schï¿½tze die Hï¿½he des hï¿½chsten Wolkenkratzers in <b>Metern</b>.
               </p>
             )}
 
-            <label className="label">Deine Schätzung</label>
+            <label className="label">Deine Schï¿½tzung</label>
             <input
               className="input"
               inputMode={roundIndex === 0 ? 'decimal' : 'numeric'}
@@ -1583,7 +1585,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:baer:submit', { estimate: Number(baer) })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1593,7 +1595,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Fuchs */}
     {phase === 'CATEGORY' && cat === 'Fuchs' && (
           <section className="card">
-      <h3>Fuchs – Runde {Number(roundIndex) + 1}</h3>
+      <h3>Fuchs ï¿½ Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1604,7 +1606,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             <input className="input" value={fuchs} onChange={(e) => setFuchs(e.target.value)} />
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:fuchs:submit', { guess: fuchs })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1617,7 +1619,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         <div className={`conn-banner ${isConnected ? '' : 'down'}`} role="status" aria-live="polite">
           <div className="conn-banner__dot" aria-hidden />
           <div className="conn-banner__text">
-            {isReconnecting ? 'Verbindung wird wiederhergestellt…' : (!isConnected ? 'Getrennt. Versuche neu zu verbinden…' : (connError ? `Fehler: ${connError}` : ''))}
+            {isReconnecting ? 'Verbindung wird wiederhergestelltï¿½' : (!isConnected ? 'Getrennt. Versuche neu zu verbindenï¿½' : (connError ? `Fehler: ${connError}` : ''))}
           </div>
           <button className="btn" onClick={() => socket.connect()} disabled={isReconnecting}>
             Neu verbinden
@@ -1730,7 +1732,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                       position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
                       fontSize:'0.8rem', fontWeight:700, letterSpacing:'.05em', color:'#d0dae8', opacity:.55
                     }} aria-hidden>
-                      Lädt…
+                      Lï¿½dtï¿½
                     </div>
                   )}
                   {factImgStatus[imgSrc] === false && (
@@ -1796,7 +1798,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                     onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; }}} />
                 </div>
                 <h2 className="category-summary__title">{categorySummary.category}</h2>
-                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} · Runden: {categorySummary.roundsPlayed}</div>
+                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} ï¿½ Runden: {categorySummary.roundsPlayed}</div>
               </div>
               <ul className="category-summary__list">
                 {earnEntries.map(([tid,coinsEarned],idx)=>{
@@ -1825,7 +1827,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       {phase === 'CATEGORY' && cat === 'Elch' && st?.elch?.category && (
         <>
           <ElchSlotDraw key={st.elch.category} text={st.elch.category} />
-          {/* ARIA-Live-Region für Screenreader: sagt gezogene Sprache an */}
+          {/* ARIA-Live-Region fï¿½r Screenreader: sagt gezogene Sprache an */}
           <div style={{position:'absolute',left:'-9999px',height:'1px',width:'1px',overflow:'hidden'}} aria-live="polite" aria-atomic="true">
             {st.elch.category}
           </div>
@@ -1952,12 +1954,12 @@ function CategoryIntro({ k, name }){
     const map = {
       hase: 'Schau mir in die Augen',
       kranich: 'Ordnung muss sein',
-      robbe: 'Ich weiß was, was du nicht weißt',
+      robbe: 'Ich weiï¿½ was, was du nicht weiï¿½t',
       eule: 'Augen auf bei der Filmwahl',
       fuchs: 'Very Important Silhouette',
       wal: 'Einer geht noch!',
-      elch: 'Buchstabier’ das Ereignis mir',
-      baer: 'Schätz’ me if you can',
+      elch: 'Buchstabierï¿½ das Ereignis mir',
+      baer: 'Schï¿½tzï¿½ me if you can',
     };
     return map[k] || (name || '');
   })();

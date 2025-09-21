@@ -548,7 +548,7 @@ function AdminView() {
         return (
           <div className="muted" style={{ marginTop: 8 }}>
             Richtige Option: <b>{robbeCorrectKey ? robbeCorrectKey.toUpperCase() : '–'}</b>
-            {perc != null && <> · Prozent: <b>{perc}%</b></>}
+            {perc != null && <> | Prozent: <b>{perc}%</b></>}
           </div>
         );
       }
@@ -570,7 +570,7 @@ function AdminView() {
         return (
           <div className="muted" style={{ marginTop: 8 }}>
             Lösung: <b>{fuchsSolution || '–'}</b>
-            {(hit != null) && <> · Treffer: <b>{hit}</b>/1</>}
+            {(hit != null) && <> | Treffer: <b>{hit}</b>/1</>}
           </div>
         );
       }
@@ -580,7 +580,7 @@ function AdminView() {
         return (
           <div className="muted" style={{ marginTop: 8 }}>
             Richtig: <b>{baerInfo.solutionLabel}</b>
-            {(delta != null) && <> · Abstand: <b>{baerInfo.fmtDelta(delta)}</b></>}
+            {(delta != null) && <> | Abstand: <b>{baerInfo.fmtDelta(delta)}</b></>}
           </div>
         );
       }
@@ -881,7 +881,7 @@ function AdminView() {
               })}
             </tbody>
           </table>
-          <div className="muted" style={{marginTop:8}}>CP: <b>{liveCP}</b> · Payout/Runde: <b>{Math.floor(liveCP / 3)}</b></div>
+          <div className="muted" style={{marginTop:8}}>CP: <b>{liveCP}</b> | Payout/Runde: <b>{Math.floor(liveCP / 3)}</b></div>
         </section>
       )}
 
@@ -893,15 +893,15 @@ function AdminView() {
           {/* Hase */}
           {showDetails && st?.currentCategory === 'Hase' && (
             <div className="card solution-card hase" style={{ marginTop: 8 }} data-active>
-              <strong>🔎 Hase – Lösung · Runde {roundIdx + 1}</strong>
+              <strong>🔎 Hase – Lösung | Runde {roundIdx + 1}</strong>
               <List items={haseSolution.map((x, i) => `${i + 1}. ${x}`)} />
-              <div className="muted" style={{ marginTop: 8 }}>Treffer: {A?.name}: <b>{hitsA_Hase ?? 0}</b> · {B?.name}: <b>{hitsB_Hase ?? 0}</b>{C && <> · {C?.name}: <b>{hitsC_Hase ?? 0}</b></>}</div>
+              <div className="muted" style={{ marginTop: 8 }}>Treffer: {A?.name}: <b>{hitsA_Hase ?? 0}</b> | {B?.name}: <b>{hitsB_Hase ?? 0}</b>{C && <> | {C?.name}: <b>{hitsC_Hase ?? 0}</b></>}</div>
             </div>
           )}
 
           {showDetails && st?.currentCategory === 'Fuchs' && (
             <div className="card solution-card fuchs" style={{ marginTop: 8 }} data-active>
-              <strong>🔎 Fuchs – richtige Lösung · Runde {roundIdx + 1}</strong>
+              <strong>🔎 Fuchs – richtige Lösung | Runde {roundIdx + 1}</strong>
               <div style={{ marginTop: 6 }}>Lösung: <b>{fuchsSolution || '—'}</b></div>
               {(() => {
                 const arr = [ ['A', hitsA_Fuchs, A], ['B', hitsB_Fuchs, B], ['C', hitsC_Fuchs, C] ].filter(x=>x[1]!=null);
@@ -910,7 +910,7 @@ function AdminView() {
                 const best = arr[0];
                 const ties = arr.filter(x=>x[1]===best[1]);
                 const speedNote = (fuchsSpeed && fuchsSpeed.winner && fuchsSpeed.winner.hit===1)
-                  ? `· Schnellste richtige Antwort: ${fuchsSpeed.winner.team?.name} (${(fuchsSpeed.winner.ms/1000).toFixed(2)}s)`
+                  ? `| Schnellste richtige Antwort: ${fuchsSpeed.winner.team?.name} (${(fuchsSpeed.winner.ms/1000).toFixed(2)}s)`
                   : '';
                 if (ties.length>1 && fuchsSpeed && fuchsSpeed.winner && fuchsSpeed.winner.hit===1 && (!fuchsSpeed.tie || fuchsSpeed.tie.length===1)) {
                   return (
@@ -930,7 +930,7 @@ function AdminView() {
                       const isWin = fuchsSpeed.winner && fuchsSpeed.winner.team?.id===e.team?.id && e.hit===1;
                       return (
                         <span key={e.team?.id||i} style={{marginRight:8}}>
-                          {i>0 && '· '}
+                          {i>0 && '| '}
                           <b style={{color:isWin?'#5df9c9':'inherit'}}>{e.team?.name||'Team'}</b>
                           {e.hit===1? '✓':'✗'}
                           <span> {(e.ms/1000).toFixed(2)}s</span>
@@ -949,7 +949,7 @@ function AdminView() {
 
           {showDetails && st?.currentCategory === 'Kranich' && (
             <div className="card solution-card kranich" style={{ marginTop: 8 }} data-active>
-              <strong>🔎 Kranich – Korrekte Ordnung · Runde {roundIdx + 1} · {KR.title}</strong>
+              <strong>🔎 Kranich – Korrekte Ordnung | Runde {roundIdx + 1} | {KR.title}</strong>
               <div className="columns" style={{ marginTop: 8 }}>
                 {[A,B,C].filter(Boolean).map((T,i)=>{
                   const sub = i===0?subA: i===1?subB: subC;
@@ -979,7 +979,7 @@ function AdminView() {
 
           {showDetails && st?.currentCategory === 'Robbe' && (
             <div className="card solution-card robbe" style={{ marginTop: 8 }} data-active>
-              <strong>🔎 Robbe – Richtige Option (Fake) · Runde {roundIdx + 1}</strong>
+              <strong>🔎 Robbe – Richtige Option (Fake) | Runde {roundIdx + 1}</strong>
               <div style={{ marginTop: 6 }}>
                 {robbeCorrectKey ? <>Richtig ist: <b>{robbeCorrectKey.toUpperCase()}</b></> : '—'}
               </div>
@@ -1025,7 +1025,7 @@ function AdminView() {
               {euleInfo.solutionList?.length ? <List items={euleInfo.solutionList} /> : <div className="muted">—</div>}
               {(euleInfo.aHits != null || euleInfo.bHits != null || euleInfo.cHits != null) && (
                 <div style={{ marginTop: 8 }} className="muted">
-                  Treffer: {A?.name}: <b>{euleInfo.aHits ?? 0}</b> · {B?.name}: <b>{euleInfo.bHits ?? 0}</b>{C && <> · {C?.name}: <b>{euleInfo.cHits ?? 0}</b></>}
+                  Treffer: {A?.name}: <b>{euleInfo.aHits ?? 0}</b> | {B?.name}: <b>{euleInfo.bHits ?? 0}</b>{C && <> | {C?.name}: <b>{euleInfo.cHits ?? 0}</b></>}
                   {euleInfo.footnote ? <div className="muted" style={{ marginTop: 4 }}>{euleInfo.footnote}</div> : null}
                 </div>
               )}
@@ -1073,33 +1073,58 @@ function AdminView() {
   {/* Decide */}
   {phase === 'CATEGORY' && (
         <section className="card admin-decide full-span">
-          <h4>🏆 Sieger wählen</h4>
+          <h4>Sieger waehlen</h4>
           {isRoundLocked && (
             <div className="muted">Runde bereits gewertet</div>
           )}
-          <div className="row wrap" style={{ gap: 12 }}>
-            {(active || []).slice(0,5).map(t => {
+          <div className="winner-select-grid">
+            {(active || []).slice(0, 5).map((t) => {
               const checked = selectedWinnerIds.includes(t.id);
               return (
-                <div key={t.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '.85rem' }}>
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      disabled={isRoundLocked}
-                      onChange={() => toggleWinnerSelection(t.id)}
-                    />
-                    nimmt am Pot teil?
-                  </label>
-                  <button className="btn btn-primary" disabled={isRoundLocked} onClick={() => resolveFor(t.id)}>
-                    Sieger: {t.name}
+                <div key={t.id} className="winner-select">
+                  <button
+                    type="button"
+                    className={`winner-option${checked ? ' selected' : ''}`}
+                    onClick={() => {
+                      if (isRoundLocked) return;
+                      toggleWinnerSelection(t.id);
+                    }}
+                    onKeyDown={(evt) => {
+                      if (isRoundLocked) return;
+                      if (evt.key === ' ' || evt.key === 'Enter') {
+                        evt.preventDefault();
+                        toggleWinnerSelection(t.id);
+                      }
+                    }}
+                    disabled={isRoundLocked}
+                    aria-pressed={checked}
+                  >
+                    <Avatar src={t?.avatar} size={36} />
+                    <div className="winner-option__body">
+                      <span className="winner-option__name">{t?.name}</span>
+                      <span className="winner-option__hint">
+                        {checked ? 'Im Pot' : 'Antippen zum Auswaehlen'}
+                      </span>
+                    </div>
+                    {checked && <span className="winner-option__check" aria-hidden>&#10003;</span>}
+                  </button>
+                  <button
+                    className="btn btn-secondary btn-compact winner-quick"
+                    disabled={isRoundLocked}
+                    onClick={() => resolveFor(t.id)}
+                  >
+                    Direkt: {t?.name}
                   </button>
                 </div>
               );
             })}
           </div>
           <div className="row wrap" style={{ gap: 12, marginTop: 12 }}>
-            <button className="btn btn-success" disabled={isRoundLocked || selectedWinnerIds.length === 0} onClick={distributePot}>
+            <button
+              className="btn btn-success"
+              disabled={isRoundLocked || selectedWinnerIds.length === 0}
+              onClick={distributePot}
+            >
               Pot verteilen
             </button>
             <button className="btn" disabled={isRoundLocked} onClick={() => resolveFor(null)}>
@@ -1107,10 +1132,10 @@ function AdminView() {
             </button>
           </div>
           <div className="muted" style={{ marginTop: 6 }}>
-            Payout/Runde: <b>{Math.floor((st?.categoryPot || 0) / 3)}</b> - Carry: <b>{st?.carryRound || 0}</b>
+            Payout/Runde: <b>{Math.floor((st?.categoryPot || 0) / 3)}</b> | Carry: <b>{st?.carryRound || 0}</b>
           </div>
           <div className="muted" style={{ fontSize: '.8rem' }}>
-            Ohne Auswahl bleibt der Einzel-Sieger-Button aktiv.
+            Mehrere Teams antippen und mit 'Pot verteilen' bestaetigen.
           </div>
         </section>
       )}

@@ -855,7 +855,9 @@ export default function ScoreboardV2(){
       {categorySummary && (()=>{
         const k = catKey(categorySummary.category);
         const earnEntries = Object.entries(categorySummary.earnings||{})
-          .sort((a,b)=> (b[1]||0)-(a[1]||0));
+          .map(([tid, value]) => [tid, Number(value) || 0])
+          .sort((a, b) => b[1] - a[1]);
+        const maxEarned = earnEntries.length ? earnEntries[0][1] : 0;
         return (
           <div className={`category-summary-overlay cat-${k}`} role="dialog" aria-modal="true" aria-label="Kategorie Zusammenfassung">
             <div className="cat-intro-blur" aria-hidden />
@@ -866,20 +868,25 @@ export default function ScoreboardV2(){
                     onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; } }} />
                 </div>
                 <h2 className="category-summary__title">{categorySummary.category}</h2>
-                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} · Runden: {categorySummary.roundsPlayed}</div>
+                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} | Runden: {categorySummary.roundsPlayed}</div>
               </div>
               <ul className="category-summary__list">
-                {earnEntries.map(([tid,coinsEarned],idx)=>{
-                  const t = (teamsRef.current||[]).find(tt=>tt.id===tid);
-                  const place = idx+1;
+                {earnEntries.map(([tid, coinsEarned], idx) => {
+                  const t = (teamsRef.current || []).find(tt => tt.id === tid);
+                  const place = idx + 1;
+                  const isWinner = maxEarned > 0 && coinsEarned === maxEarned;
+                  const itemClass = [`place-${place}`, isWinner ? 'co-winner' : ''].filter(Boolean).join(' ');
                   return (
-                    <li key={tid} className={`place-${place}`}>
-                      <div className="row" style={{justifyContent:'space-between', width:'100%'}}>
-                        <div style={{display:'flex',alignItems:'center',gap:14}}>
+                    <li key={tid} className={itemClass}>
+                      <div className="row" style={{ justifyContent: 'space-between', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                           <img src={avatarSrc(t)} alt="avatar" className="team-avatar-sm" />
-                          <span className="team-name-inline">{t?.name||tid}</span>
+                          <span className="team-name-inline">{t?.name || tid}</span>
                         </div>
-                        <div className="coins-earned"><span className="icon coin coin-sm" aria-hidden />+{coinsEarned||0}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <div className="coins-earned"><span className="icon coin coin-sm" aria-hidden />+{coinsEarned}</div>
+                          {isWinner && <span className="category-summary__winner-tag">Sieger</span>}
+                        </div>
                       </div>
                     </li>
                   );

@@ -962,7 +962,10 @@ body[class*="cat-"] .card {
 .category-summary__list li.place-2 { background: linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)) !important; }
 .category-summary__list li.place-3 { background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important; }
 .category-summary__header .category-icon.lg { background:#0f1421 !important; }
-.category-summary__list li .coins-earned { color: color-mix(in srgb,var(--accent) 85%, #ffffff) !important; text-shadow:none; }
+.category-summary__list li .coins-earned
+.category-summary__list li.co-winner { box-shadow:0 14px 40px -10px color-mix(in srgb,var(--accent) 28%, rgba(0,0,0,0.38)); border:1px solid color-mix(in srgb,var(--accent) 38%, rgba(255,255,255,0.8)); }
+.category-summary__winner-tag { display:inline-flex; align-items:center; gap:4px; padding:4px 12px; border-radius:999px; font-size:.75rem; font-weight:800; letter-spacing:.6px; text-transform:uppercase; background:color-mix(in srgb,var(--accent) 78%, #ffffff); color:#0f1421; box-shadow:0 6px 18px -8px color-mix(in srgb,var(--accent) 55%, rgba(0,0,0,0.4)); }
+ { color: color-mix(in srgb,var(--accent) 85%, #ffffff) !important; text-shadow:none; }
 
 /* =========================
    FORM CONTROLS
@@ -1919,6 +1922,23 @@ body.admin-light .team-card { background:linear-gradient(180deg,#fff,#f2f6fa); b
 .admin-decide { position:relative; z-index:10; }
 .admin-decide.full-span { grid-column:1 / -1; }
 .admin-decide + .admin-teams { margin-top:14px; }
+.winner-select-grid { display:flex; flex-wrap:wrap; gap:12px; align-items:stretch; }
+.winner-select { display:flex; flex-direction:column; gap:6px; min-width:200px; flex:1 1 200px; }
+button.winner-option { display:flex; align-items:center; gap:12px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.05); border-radius:14px; padding:12px 14px; color:inherit; text-align:left; cursor:pointer; transition:background .18s ease, border-color .18s ease, transform .18s ease; min-height:64px; }
+button.winner-option:disabled { cursor:not-allowed; opacity:0.6; }
+button.winner-option:hover:not(:disabled), button.winner-option:focus-visible { border-color:color-mix(in srgb,var(--accent) 60%, rgba(255,255,255,0.15)); background:color-mix(in srgb,var(--accent) 20%, rgba(255,255,255,0.05)); transform:translateY(-1px); }
+button.winner-option.selected { border-color:color-mix(in srgb,var(--accent) 80%, rgba(255,255,255,0.2)); background:color-mix(in srgb,var(--accent) 35%, rgba(255,255,255,0.07)); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 45%, transparent); }
+.winner-option__body { flex:1; display:flex; flex-direction:column; gap:2px; }
+.winner-option__name { font-weight:700; font-size:1rem; }
+.winner-option__hint { font-size:.75rem; opacity:.75; }
+.winner-option__check { font-size:1.2rem; font-weight:700; color:color-mix(in srgb,var(--accent) 80%, #ffffff); }
+.winner-quick { align-self:flex-start; }
+@media (max-width:720px){
+  .winner-select-grid { gap:10px; }
+  .winner-select { min-width:160px; }
+  button.winner-option { padding:10px 12px; }
+}
+
 @media (max-width:1080px){ .sticky-decide { position:static; top:auto; } }
 
 /* Category card accent border */
