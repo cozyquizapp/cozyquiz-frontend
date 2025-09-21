@@ -3,11 +3,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import socket, { connectWithTeamId } from '../socket';
 import catKey from '../utils/catKey';
 
-// Zus�tzliche erlaubte Hosts (WLAN-IP hinzugef�gt)
+// Zusätzliche erlaubte Hosts (WLAN-IP hinzugefügt)
 const ALLOWED_CLIENT_HOSTS = [
   'localhost',
   '127.0.0.1',
-  '192.168.5.117', // WLAN f�r Teilnehmer
+  '192.168.5.117', // WLAN für Teilnehmer
 ];
 
 // Einmaliges Debug-Logging (optional)
@@ -61,7 +61,7 @@ const KRANICH_ROUNDS = [
     title: 'Social Media',
     items: ['TikTok', 'Facebook', 'Instagram', 'Twitter (X)'],
     categories: [
-      { id: 'gruendung', label: 'Gr�ndungsjahr' },
+      { id: 'gruendung', label: 'Gründungsjahr' },
       { id: 'posts', label: 'Posts pro Minute' },
       { id: 'maus', label: 'Monatlich aktive Nutzer' },
     ],
@@ -71,7 +71,7 @@ const KRANICH_ROUNDS = [
     items: ['Taylor Swift', 'Ed Sheeran', 'Billie Eilish', 'TheWeeknd'],
     categories: [
       { id: 'geburtsjahr', label: 'Geburtsjahr' },
-      { id: 'song', label: 'Meistgeh�rter Song (Spotify)'},
+      { id: 'song', label: 'Meistgehörter Song (Spotify)'},
       { id: 'ig', label: 'Instagram-Follower' },
     ],
   },
@@ -91,15 +91,15 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
   const cat = st?.currentCategory;
   const roundIndex = Number(st?.roundIndex || 0);
-  // Phase + RoundKey m�ssen vor erstem Gebrauch definiert sein (TDZ fix)
+  // Phase + RoundKey müssen vor erstem Gebrauch definiert sein (TDZ fix)
   const phase = st?.phase || 'LOBBY';
   const roundKey = `${st?.currentCategory || 'NONE'}#${st?.roundIndex || 0}#${st?.phase}`;
 
-  // FEHLTE: State f�r das letzte Ergebnis und den Key
+  // FEHLTE: State für das letzte Ergebnis und den Key
   const [lastResult, setLastResult] = useState(null);
   const lastResultKey = useRef('');
 
-  // Eins�tze
+  // Einsätze
   const [stake, setStake] = useState(0);
   const [useJoker, setUseJoker] = useState(false);
 
@@ -164,7 +164,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   // Wal
   const [walBid, setWalBid] = useState(0);
 
-  // B�r
+  // Bär
   const [baer, setBaer] = useState('');
 
   // Fuchs
@@ -174,7 +174,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const [editMode, setEditMode] = useState(false);
   useEffect(()=>{ setEditMode(false); }, [roundKey]);
 
-  // Erkennen ob schon etwas f�r aktuelle Kategorie abgegeben wurde
+  // Erkennen ob schon etwas für aktuelle Kategorie abgegeben wurde
   const mySub = (st && st.submissions && typeof st.submissions === 'object') ? (st.submissions[fixedId] || {}) : {};
   const hasSubmitted = useMemo(()=>{
     if (phase !== 'CATEGORY') return false;
@@ -188,7 +188,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         if (roundIndex === 2) return Array.isArray(mySub.r4) && mySub.r4.some(a=>a && a.trim());
         return false;
       case 'Wal':    return typeof mySub.bid === 'number';
-      case 'B�r':    return typeof mySub.estimate === 'number';
+      case 'Bär':    return typeof mySub.estimate === 'number';
       case 'Fuchs':  return typeof mySub.guess === 'string' && mySub.guess.trim().length>0;
       default: return false;
     }
@@ -196,10 +196,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const submissionLocked = hasSubmitted && !editMode; // UI sperren
   const sendLabel = editMode ? 'Aktualisieren' : (hasSubmitted ? 'Gesendet' : 'Senden');
 
-  // Timer � lokales Ticken
-  // Ref f�r haptisches Feedback bei "Zu sp�t" (Buzz zu sp�t)
+  // Timer ? lokales Ticken
+  // Ref für haptisches Feedback bei "Zu spät" (Buzz zu spät)
   const zuSpaetRef = useRef(false);
-  // Haptisches Feedback bei "Zu sp�t" (locked, nicht myBuzz, nur Elch)
+  // Haptisches Feedback bei "Zu spät" (locked, nicht myBuzz, nur Elch)
   useEffect(() => {
     if (st?.currentCategory === 'Elch') {
       const el = st?.elch;
@@ -216,7 +216,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   }, [st?.currentCategory, st?.elch?.buzzLocked, st?.elch?.buzzOrder, fixedId]);
   const [now, setNow] = useState(Date.now());
   const [timerWasActive, setTimerWasActive] = useState(false);
-  // NEU: Pause-Status f�r Team-Ansicht
+  // NEU: Pause-Status für Team-Ansicht
   const [pausedAt, setPausedAt] = useState(null);
   // Overlay for round result feedback (win/lose)
   const [showLoseOverlay, setShowLoseOverlay] = useState(false);
@@ -233,49 +233,49 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const FUN_FACTS = useRef([
     // 80er-Motto
     '80er-Style: Schulterpolster und Neonfarben - je knalliger, desto besser!',
-    'Walkman-Zeit: Mixtapes to go � Kopfh�rer wurden zum Accessoire.',
-    'Haar-Ikonen: Vokuhila und F�hnfrisuren � Haarsprayverbrauch auf Rekordniveau.',
-    'Aerobic-Look: Leggings, Stirnb�nder und Trainingsanz�ge pr�gten die Streetwear.',
+    'Walkman-Zeit: Mixtapes to go ? Kopfhörer wurden zum Accessoire.',
+    'Haar-Ikonen: Vokuhila und Föhnfrisuren ? Haarsprayverbrauch auf Rekordniveau.',
+    'Aerobic-Look: Leggings, Stirnbänder und Trainingsanzüge prägten die Streetwear.',
     // Arendal & Umgebung
-  { text: 'Arendal liegt an der S�dk�ste Norwegens (Agder) am Skagerrak.', img: '/funfacts/arendal.jpg', alt: 'Blick auf Arendal an der S�dk�ste Norwegens' },
-  { text: 'Die Altstadt rund um den Hafen �Pollen� ist f�r Holzh�user und Caf�s bekannt.', img: '/funfacts/Arendal_Pollen.jpg', alt: 'Holzh�user und Caf�s am Hafen Pollen in Arendal' },
-  { text: 'Jeden August: �Arendalsuka� � Norwegens gro�e Demokratie-/Politik-Woche.', img: '/funfacts/arendalsuka.jpg', alt: 'Menschen und St�nde bei der Arendalsuka' },
-  { text: 'Trom�y & His�y: Insel-Feeling � Hove ist ein Top-Ausflugsziel.', img: '/funfacts/stranhove.jpg', alt: 'Strand Hove auf einer der Inseln bei Arendal' },
-  { text: 'Arendal war im 19. Jh. ein wichtiges Zentrum f�r Segelschifffahrt.', img: '/funfacts/historic.jpeg', alt: 'Historisches Segelschiff / maritime Szene in Arendal' },
-  { text: 'Der Fluss Nidelva m�ndet hier ins Meer � perfekt f�r Kajak & SUP.', img: '/funfacts/sup.jpg', alt: 'SUP oder Kajak auf dem Nidelva vor Arendal' },
+  { text: 'Arendal liegt an der Südküste Norwegens (Agder) am Skagerrak.', img: '/funfacts/arendal.jpg', alt: 'Blick auf Arendal an der Südküste Norwegens' },
+  { text: 'Die Altstadt rund um den Hafen ?Pollen? ist für Holzhäuser und Cafés bekannt.', img: '/funfacts/Arendal_Pollen.jpg', alt: 'Holzhäuser und Cafés am Hafen Pollen in Arendal' },
+  { text: 'Jeden August: ?Arendalsuka? ? Norwegens große Demokratie-/Politik-Woche.', img: '/funfacts/arendalsuka.jpg', alt: 'Menschen und Stände bei der Arendalsuka' },
+  { text: 'Tromøy & Hisøy: Insel-Feeling ? Hove ist ein Top-Ausflugsziel.', img: '/funfacts/stranhove.jpg', alt: 'Strand Hove auf einer der Inseln bei Arendal' },
+  { text: 'Arendal war im 19. Jh. ein wichtiges Zentrum für Segelschifffahrt.', img: '/funfacts/historic.jpeg', alt: 'Historisches Segelschiff / maritime Szene in Arendal' },
+  { text: 'Der Fluss Nidelva mündet hier ins Meer ? perfekt für Kajak & SUP.', img: '/funfacts/sup.jpg', alt: 'SUP oder Kajak auf dem Nidelva vor Arendal' },
     // Spielerisch / Humor
     'Hier sagt man: Das Team mit dem besten Outfit holt den Style-Pokal. ??',
-    'Johannes ist objektiv der beste Moderator � steht so im Skript. ??',
+    'Johannes ist objektiv der beste Moderator ? steht so im Skript. ??',
     'Fun Fact: 100% der Gewinnerteams hatten heute bereits Wasser getrunken. ??',
-    'Ger�cht: Wer w�hrend der Pause tief durchatmet, erh�ht die Punktzahl um +0 (aber f�hlt sich besser).',
-    'Studien sagen: High-Five erh�ht kurzfristig die Team-Synchronit�t um 8%. ?',
-    'Inoffizielle Regel: Wer zuerst �Was war nochmal die Frage?� sagt, muss extra fokussieren.',
+    'Gerücht: Wer während der Pause tief durchatmet, erhöht die Punktzahl um +0 (aber fühlt sich besser).',
+    'Studien sagen: High-Five erhöht kurzfristig die Team-Synchronität um 8%. ?',
+    'Inoffizielle Regel: Wer zuerst ?Was war nochmal die Frage?? sagt, muss extra fokussieren.',
     'Kurze Pause = Gehirn-Refresh. Schon Blinzeln bringt Mini-Reboot.',
-    'Der Wal liebt stille Strategen � sagt die Legende.',
+    'Der Wal liebt stille Strategen ? sagt die Legende.',
     'Der Fuchs bevorzugt elegante Antworten vor schnellen. Glaubt man.',
-  'Micro-Pause: Schultern hoch � halten � loslassen. Mini-Reset.',
-  'Wer summt, reguliert Stress. Summen z�hlt als Strategie. ??',
+  'Micro-Pause: Schultern hoch ? halten ? loslassen. Mini-Reset.',
+  'Wer summt, reguliert Stress. Summen zählt als Strategie. ??',
   'Fun Fact: Teams mit klaren Rollen spielen oft ruhiger.',
-  '�Ich hab da eine Theorie�� � ber�hmte letzte Worte vor Plot-Twist.',
+  '?Ich hab da eine Theorie?? ? berühmte letzte Worte vor Plot-Twist.',
   'Kaffeefakt: Geruch allein kann Aufmerksamkeit kurz steigern.',
   'Die meisten spontanen Ideen kommen Sekunden NACH einem kurzem Blick weg vom Screen.',
-  'Rainbow-Trivia: In Norwegen sieht man h�ufig Doppelregenb�gen � extra Gl�ck? ??',
-  'Kurzer Tap-Wechsel kann visuelle Erm�dung reduzieren � danach oft fokussierter.',
-  'Wer laut gewinnt, gewinnt doppelt (gef�hlt).',
-  'Legend says: Saying �Wal� zu ernst l�st mystische Kr�fte aus.',
-  'Hase-Fact: Schnelles Notieren ? sp�ter Sortieren spart Zeit.',
-  'Brain-Boost: Tief ein � 4s halten � 6s aus. Parasympathikus aktiviert.',
+  'Rainbow-Trivia: In Norwegen sieht man häufig Doppelregenbögen ? extra Glück? ??',
+  'Kurzer Tap-Wechsel kann visuelle Ermüdung reduzieren ? danach oft fokussierter.',
+  'Wer laut gewinnt, gewinnt doppelt (gefühlt).',
+  'Legend says: Saying ?Wal? zu ernst löst mystische Kräfte aus.',
+  'Hase-Fact: Schnelles Notieren ? später Sortieren spart Zeit.',
+  'Brain-Boost: Tief ein ? 4s halten ? 6s aus. Parasympathikus aktiviert.',
   'Wenn ihr diesen Fact nochmal seht: Gratulation, ihr habt das Loop-Ei gefunden.',
-  // Beispiel mit Bild (f�ge eigene Dateien in /funfacts/ hinzu)
-  { text: 'Arendal Hafen � historische Holzfassaden und Segelgeschichte live.', img: '/funfacts/hafen.jpg', alt: 'Hafen von Arendal mit Booten' },
-  { text: 'Typischer norwegischer Sch�rengarten bei Abendlicht � ruhig & weit.', img: '/funfacts/schaereninsel.jpg', alt: 'Sch�reninsel bei Abendlicht' },
-  // Neue Bild-Facts (zus�tzliche Eintr�ge)
+  // Beispiel mit Bild (füge eigene Dateien in /funfacts/ hinzu)
+  { text: 'Arendal Hafen ? historische Holzfassaden und Segelgeschichte live.', img: '/funfacts/hafen.jpg', alt: 'Hafen von Arendal mit Booten' },
+  { text: 'Typischer norwegischer Schärengarten bei Abendlicht ? ruhig & weit.', img: '/funfacts/schaereninsel.jpg', alt: 'Schäreninsel bei Abendlicht' },
+  // Neue Bild-Facts (zusätzliche Einträge)
   { text: '80er-Style: Schulterpolster und Neonfarben - je knalliger, desto besser!', img: '/funfacts/80er-style.jpg', alt: '80er-Style mit Neonfarben und Schulterpolstern' },
-  { text: 'Walkman-Zeit: Mixtapes to go - Kopfh�rer wurden zum Accessoire.', img: '/funfacts/walkman.jpg', alt: 'Walkman und Kopfh�rer als Accessoire' },
-  { text: 'Haar-Ikonen: Vokuhila und F�hnfrisuren - Haarsprayverbrauch auf Rekordniveau.', img: '/funfacts/Frisuren.jpg', alt: '80er-Jahre Frisuren und Vokuhila' },
-  { text: 'Aerobic-Look: Leggings, Stirnb�nder und Trainingsanz�ge pr�gten die Streetwear.', img: '/funfacts/aerobic.jpg', alt: 'Aerobic-Look mit Leggings und Stirnband' },
+  { text: 'Walkman-Zeit: Mixtapes to go - Kopfhörer wurden zum Accessoire.', img: '/funfacts/walkman.jpg', alt: 'Walkman und Kopfhörer als Accessoire' },
+  { text: 'Haar-Ikonen: Vokuhila und Föhnfrisuren - Haarsprayverbrauch auf Rekordniveau.', img: '/funfacts/Frisuren.jpg', alt: '80er-Jahre Frisuren und Vokuhila' },
+  { text: 'Aerobic-Look: Leggings, Stirnbänder und Trainingsanzüge prägten die Streetwear.', img: '/funfacts/aerobic.jpg', alt: 'Aerobic-Look mit Leggings und Stirnband' },
   { text: 'Kaffeefakt: Geruch allein kann Aufmerksamkeit kurz steigern.', img: '/funfacts/kaffee.jpeg', alt: 'Tasse Kaffee, Duft steigt auf' },
-  { text: 'Rainbow-Trivia: In Norwegen sieht man h�ufig Doppelregenb�gen - extra Gl�ck?', img: '/funfacts/doppelregenbogen.jpg', alt: 'Doppelregenbogen am Himmel' },
+  { text: 'Rainbow-Trivia: In Norwegen sieht man häufig Doppelregenbögen - extra Glück?', img: '/funfacts/doppelregenbogen.jpg', alt: 'Doppelregenbogen am Himmel' },
   ]).current;
   const [showFacts, setShowFacts] = useState(true);
   const [factIdx, setFactIdx] = useState(0);
@@ -314,7 +314,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         o.start();
         o.stop(ctx.currentTime + 0.22);
       } catch {}
-      // Falls Team nachtr�glich fehlt (Reset): (Re)Join versuchen mit Session (leicht gedrosselt)
+      // Falls Team nachträglich fehlt (Reset): (Re)Join versuchen mit Session (leicht gedrosselt)
       const exists2 = Array.isArray(list) && list.some(t => t.id === fixedId);
       if (!exists2) {
         const now = Date.now();
@@ -364,12 +364,12 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     };
     const onTeams = (list) => {
       setTeams(list);
-      // Initial-Join nur ausf�hren, wenn Team noch nicht existiert (z. B. direkter Aufruf der Team-URL)
+      // Initial-Join nur ausführen, wenn Team noch nicht existiert (z. B. direkter Aufruf der Team-URL)
       if (!didInitJoinRef.current) {
         const exists = Array.isArray(list) && list.some(t => t.id === fixedId);
         if (!exists) {
           didInitJoinRef.current = true;
-          // Versuche, gespeicherte Session zu nutzen (bewahrt gew�hlten Avatar/Name)
+          // Versuche, gespeicherte Session zu nutzen (bewahrt gewählten Avatar/Name)
           let stored = null;
           try { stored = JSON.parse(localStorage.getItem('teamSession')||'null'); } catch {}
           if (stored && stored.id === fixedId) {
@@ -382,7 +382,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       }
     };
 
-    // Ergebnis direkt empfangen und in den State eintragen (robust f�r verschiedene Strukturen)
+    // Ergebnis direkt empfangen und in den State eintragen (robust für verschiedene Strukturen)
     const onResultAnnounce = (result) => {
       // Debug: Zeige das empfangene Ergebnisobjekt in der Konsole
       console.log('[result:announce]', result);
@@ -448,7 +448,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     s.io.on('reconnect', onReconnect);
     s.on('connect_error', onConnectError);
 
-    // Initialen State/Teams anfordern; Join wird (falls n�tig) im onTeams-Handler erledigt
+    // Initialen State/Teams anfordern; Join wird (falls nötig) im onTeams-Handler erledigt
     s.emit('requestState');
     s.emit('requestTeams');
 
@@ -467,7 +467,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     };
   }, [fixedId, defaultName, defaultAvatar]);
 
-  // NEU: lastResult zur�cksetzen, wenn Runde/Kategorie wechselt
+  // NEU: lastResult zurücksetzen, wenn Runde/Kategorie wechselt
   useEffect(() => {
     const key = `${cat}#${roundIndex}`;
     if (lastResultKey.current !== key) {
@@ -489,7 +489,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     });
     return map;
   }, [teams]);
-  // Fallback: falls Team noch nicht �ber teamsUpdated da ist, versuche gespeicherten Namen
+  // Fallback: falls Team noch nicht ?ber teamsUpdated da ist, versuche gespeicherten Namen
   let fallbackName = defaultName;
   if(!me){
     try {
@@ -497,7 +497,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       if(stored) fallbackName = stored;
     } catch {}
   }
-  // Debug: Aufl�sung des Team-Namens beobachten
+  // Debug: Auflösung des Team-Namens beobachten
   useEffect(() => {
     try {
       console.debug('[TeamFixed] name resolve', { fixedId, meName: me?.name, fallbackName });
@@ -582,7 +582,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
   const displayCatName = (c) => {
     if (!c) return c;
-    if (c === 'B??r' || c === 'Baer') return 'B�r';
+    if (c === 'Bär' || c === 'Baer') return 'Bär';
     return c;
   };
 
@@ -633,7 +633,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         setPausedAt({ remaining: pausedRemaining });
       }
     } else {
-      // Wenn Timer wieder l�uft, Pause aufheben
+      // Wenn Timer wieder läuft, Pause aufheben
       if (endsAt && endsAt > now && pausedAt) setPausedAt(null);
       // Wenn Phase wechselt, Pause aufheben
       if (st?.phase !== 'CATEGORY' && pausedAt) setPausedAt(null);
@@ -662,7 +662,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       order: kranichOrder,
     });
 
-  // Eule submit � Mapping: 0?r1, 1?r3, 2?r4
+  // Eule submit ? Mapping: 0?r1, 1?r3, 2?r4
   const euleSubmit = () => {
     if (roundIndex === 0) {
       socket.emit('team:eule:submit', { r1: euleRound1 });
@@ -675,14 +675,14 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
   };
 
-  // Hilfsfunktion: Hole das Ergebnis-Objekt f�r die aktuelle Kategorie/Runde (robust f�r alle Strukturen)
+  // Hilfsfunktion: Hole das Ergebnis-Objekt für die aktuelle Kategorie/Runde (robust für alle Strukturen)
   function getCurrentResult() {
     // Zuerst: lastResult, falls passend
     if (lastResult && lastResult.category === cat && lastResult.roundIndex === roundIndex) {
       return lastResult;
     }
     if (!st) return null;
-    // 1. Suche nach st.results als Objekt mit Kategorie-Schl�ssel
+    // 1. Suche nach st.results als Objekt mit Kategorie-Schlüssel
     if (st.results && typeof st.results === 'object' && cat && st.results[cat]) {
       if (Array.isArray(st.results[cat])) {
         return st.results[cat][roundIndex] || null;
@@ -697,7 +697,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
     // 3. Suche nach st.result (Fallback)
     if (st.result && st.result.category === cat) return st.result;
-    // 4. Fallback: Suche nach einem Ergebnisobjekt, das winnerId f�r mein Team enth�lt
+    // 4. Fallback: Suche nach einem Ergebnisobjekt, das winnerId für mein Team enthält
     if (st.results && typeof st.results === 'object') {
       for (const key in st.results) {
         const entry = st.results[key];
@@ -715,113 +715,224 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     return null;
   }
 
-  // Hilfsfunktion: Hat mein Team die Runde gewonnen?
-  const didMyTeamWin = (() => {
+  // Hilfsfunktion: Meta-Infos zur aktuellen Runde (Gewinner, eigener Status, Auszahlungen)
+  const resultMeta = useMemo(() => {
+    const meta = { outcome: null, winners: [], myGain: null, others: [] };
     const res = getCurrentResult();
-    if (!res) return null;
-    if ('winnerId' in res) {
-      if (res.winnerId === fixedId) return true;
-      if (res.winnerId) return false;
+    if (!res) return meta;
+    const winnerSet = new Set();
+    if (Array.isArray(res.winnerIds)) {
+      res.winnerIds.forEach((id) => {
+        if (id === null || id === undefined) return;
+        winnerSet.add(String(id));
+      });
     }
-    // Fallback: falls Struktur anders, ggf. anpassen
-    return null;
-  })();
+    if (res.winnerId !== undefined && res.winnerId !== null) {
+      winnerSet.add(String(res.winnerId));
+    }
+    meta.winners = Array.from(winnerSet);
+    if (meta.winners.length) {
+      if (meta.winners.includes(myTeamId)) {
+        meta.outcome = meta.winners.length > 1 ? 'share' : 'win';
+      } else {
+        meta.outcome = 'lose';
+      }
+    }
+    const distributed = Array.isArray(res.distributed) ? res.distributed : [];
+    const myEntry = distributed.find((entry) => entry && String(entry.id) === myTeamId);
+    if (myEntry && typeof myEntry.gain === 'number') {
+      meta.myGain = myEntry.gain;
+    }
+    meta.others = meta.winners
+      .filter((id) => id !== myTeamId)
+      .map((id) => teamsById.get(id)?.name)
+      .filter(Boolean);
+    return meta;
+  }, [cat, roundIndex, lastResult, myTeamId, teamsById, st?.roundResolved, st?.results]);
 
-  // R�ckmeldungstexte f�r jede Kategorie
+  const roundOutcome = resultMeta.outcome;
+
+// Rückmeldungstexte für jede Kategorie
   const resultFeedback = useMemo(() => {
-    // Zeige Feedback, sobald ein Gewinner existiert (unabh�ngig von phase)
-    if (didMyTeamWin == null) return null;
+    if (!roundOutcome) return null;
+    const isShare = roundOutcome === 'share';
+    const isWin = roundOutcome === 'win';
+    const isLose = roundOutcome === 'lose';
+    const emoji = isShare ? '??' : (isWin ? '??' : '??');
+    const catLabel = cat ? `${cat}-Runde` : 'Runde';
+    const joinNames = (names = []) => {
+      if (!names.length) return '';
+      if (names.length === 1) return names[0];
+      if (names.length === 2) return `${names[0]} und ${names[1]}`;
+      return `${names.slice(0, -1).join(', ')} und ${names[names.length - 1]}`;
+    };
+    const others = resultMeta.others;
     let msg = '';
-    let emoji = didMyTeamWin ? '??' : '??';
-    switch (cat) {
-      case 'Hase':
-        msg = didMyTeamWin
-          ? 'Gl�ckwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
-          : 'Leider hat das andere Team diese Hase-Runde gewonnen.';
-        break;
-      case 'Kranich':
-        msg = didMyTeamWin
-          ? 'Super! Ihr habt die Kranich-Runde gewonnen und den Punkt erhalten.'
-          : 'Schade, das andere Team war bei Kranich besser.';
-        break;
-      case 'Robbe':
-        msg = didMyTeamWin
-          ? 'Stark! Ihr habt die Robbe-Runde gewonnen und den Punkt geholt.'
-          : 'Leider hat das andere Team die Robbe-Runde gewonnen.';
-        break;
-      case 'Eule':
-        msg = didMyTeamWin
-          ? 'Klasse! Ihr habt die Eule-Runde gewonnen und den Punkt erhalten.'
-          : 'Das andere Team war bei Eule erfolgreicher.';
-        break;
-      case 'Wal':
-        msg = didMyTeamWin
-          ? 'Ihr habt die Wal-Runde gewonnen und den Punkt geholt!'
-          : 'Das andere Team hat die Wal-Runde gewonnen.';
-        break;
-      case 'Elch':
-        msg = didMyTeamWin
-          ? 'Ihr wart beim Elch am schnellsten und habt den Punkt geholt!'
-          : 'Das andere Team war beim Elch schneller.';
-        break;
-      case 'B�r':
-        msg = didMyTeamWin
-          ? 'Sehr gut! Ihr habt die B�r-Runde gewonnen und den Punkt erhalten.'
-          : 'Das andere Team war bei B�r n�her dran.';
-        break;
-      case 'Fuchs':
-        msg = didMyTeamWin
-          ? 'Ihr habt die Fuchs-Runde gewonnen und den Punkt geholt!'
-          : 'Das andere Team hat bei Fuchs besser.';
-        break;
-      default:
-        msg = didMyTeamWin
-          ? 'Ihr habt diese Runde gewonnen!'
-          : 'Leider hat das andere Team diese Runde gewonnen.';
+    if (isShare) {
+      const withText = others.length ? ` zusammen mit ${joinNames(others)}` : '';
+      msg = `Ihr teilt euch den Pot in der ${catLabel}${withText}!`;
+    } else if (isWin) {
+      switch (cat) {
+        case 'Hase':
+          msg = 'Glückwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.';
+          break;
+        case 'Kranich':
+          msg = 'Super! Ihr habt die Kranich-Runde gewonnen und den Punkt erhalten.';
+          break;
+        case 'Robbe':
+          msg = 'Stark! Ihr habt die Robbe-Runde gewonnen und den Punkt geholt.';
+          break;
+        case 'Eule':
+          msg = 'Klasse! Ihr habt die Eule-Runde gewonnen und den Punkt erhalten.';
+          break;
+        case 'Wal':
+          msg = 'Ihr habt die Wal-Runde gewonnen und den Punkt geholt!';
+          break;
+        case 'Elch':
+          msg = 'Ihr wart beim Elch am schnellsten und habt den Punkt geholt!';
+          break;
+        case 'Bär':
+          msg = 'Sehr gut! Ihr habt die Bär-Runde gewonnen und den Punkt erhalten.';
+          break;
+        case 'Fuchs':
+          msg = 'Ihr habt die Fuchs-Runde gewonnen und den Punkt geholt!';
+          break;
+        default:
+          msg = 'Ihr habt diese Runde gewonnen!';
+      }
+    } else if (isLose) {
+      const sharedWin = resultMeta.winners.length > 1;
+      if (sharedWin) {
+        const shareTxt = others.length ? `${joinNames(others)} teilen sich den Pot.` : 'Andere Teams teilen sich den Pot.';
+        msg = `${shareTxt} Ihr geht diesmal leer aus.`;
+      } else {
+        switch (cat) {
+          case 'Hase':
+            msg = 'Leider hat das andere Team diese Hase-Runde gewonnen.';
+            break;
+          case 'Kranich':
+            msg = 'Schade, das andere Team war bei Kranich besser.';
+            break;
+          case 'Robbe':
+            msg = 'Leider hat das andere Team die Robbe-Runde gewonnen.';
+            break;
+          case 'Eule':
+            msg = 'Das andere Team war bei Eule erfolgreicher.';
+            break;
+          case 'Wal':
+            msg = 'Das andere Team hat die Wal-Runde gewonnen.';
+            break;
+          case 'Elch':
+            msg = 'Das andere Team war beim Elch schneller.';
+            break;
+          case 'Bär':
+            msg = 'Das andere Team war bei Bär näher dran.';
+            break;
+          case 'Fuchs':
+            msg = 'Das andere Team war bei Fuchs besser.';
+            break;
+          default:
+            msg = 'Leider hat das andere Team diese Runde gewonnen.';
+        }
+      }
     }
+    if (!msg) {
+      msg = isWin ? 'Ihr habt diese Runde gewonnen!' : 'Leider hat das andere Team diese Runde gewonnen.';
+    }
+    const classes = ['result-feedback', isLose ? 'lose' : 'win'];
+    if (isShare) classes.push('share');
     return (
-      <div className={`result-feedback ${didMyTeamWin ? 'win' : 'lose'}`}>
+      <div className={classes.join(' ')}>
         <div style={{ fontSize: 32, marginBottom: 8 }}>{emoji}</div>
         <div>{msg}</div>
       </div>
     );
-  }, [cat, didMyTeamWin]);
+  }, [cat, roundOutcome, resultMeta]);
 
-  // Show foreground overlay for win/lose for 10s when a winner is announced
+// Show foreground overlay for win/lose for 10s when a winner is announced
   useEffect(() => {
     if (!lastResult) return;
-    if (lastResult.winnerId) {
-      if (lastResult.winnerId === fixedId) {
-        setShowWinOverlay(true);
-        if (hideWinTmo.current) clearTimeout(hideWinTmo.current);
-        hideWinTmo.current = setTimeout(() => {
-          setShowWinOverlay(false);
-          hideWinTmo.current = null;
-        }, 5000);
-      } else {
-        setShowLoseOverlay(true);
-        if (hideLoseTmo.current) clearTimeout(hideLoseTmo.current);
-        hideLoseTmo.current = setTimeout(() => {
-          setShowLoseOverlay(false);
-          hideLoseTmo.current = null;
-        }, 5000);
+    const winners = [];
+    if (Array.isArray(lastResult.winnerIds)) {
+      lastResult.winnerIds.forEach((id) => {
+        if (id === null || id === undefined) return;
+        winners.push(String(id));
+      });
+    }
+    if (lastResult.winnerId !== undefined && lastResult.winnerId !== null) {
+      winners.push(String(lastResult.winnerId));
+    }
+    if (!winners.length) return;
+    if (winners.includes(myTeamId)) {
+      setShowWinOverlay(true);
+      if (hideWinTmo.current) clearTimeout(hideWinTmo.current);
+      hideWinTmo.current = setTimeout(() => {
+        setShowWinOverlay(false);
+        hideWinTmo.current = null;
+      }, 5000);
+    } else {
+      setShowLoseOverlay(true);
+      if (hideLoseTmo.current) clearTimeout(hideLoseTmo.current);
+      hideLoseTmo.current = setTimeout(() => {
+        setShowLoseOverlay(false);
+        hideLoseTmo.current = null;
+      }, 5000);
+    }
+  }, [lastResult, myTeamId]);
+
+  // Rotate fun facts in LOBBY every 10s (randomized, avoid immediate repeat)
+  // On mount (or when facts are enabled), pick a random starting fact
+  useEffect(() => {
+    if (st?.phase === 'LOBBY' && showFacts) {
+      const len = (Array.isArray(FUN_FACTS) ? FUN_FACTS.length : 0) || 1;
+      if (len > 1) {
+        const n = Math.floor(Math.random() * len);
+        setFactIdx(n);
       }
     }
-  }, [lastResult, fixedId]);
-
-  // Rotate fun facts in LOBBY every 10s
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showFacts, st?.phase]);
   useEffect(() => {
-    if (st?.phase !== 'LOBBY' || !showFacts) return;
-    const id = setInterval(() => setFactIdx((i) => (i + 1) % FUN_FACTS.length), 10000);
+    if (st?.phase !== 'LOBBY' || !showFacts || factsPaused) return;
+    const len = (Array.isArray(FUN_FACTS) ? FUN_FACTS.length : 0) || 1;
+    const id = setInterval(() => {
+      setFactIdx((prev) => {
+        if (len <= 1) return 0;
+        let n = Math.floor(Math.random() * len);
+        if (n === prev) n = (n + 1) % len;
+        try { navigator.vibrate && navigator.vibrate(10); } catch {}
+        return n;
+      });
+    }, 10000);
     return () => clearInterval(id);
-  }, [st?.phase, showFacts, FUN_FACTS.length]);
+  }, [st?.phase, showFacts, factsPaused]);
 
-  // ����� RENDER �����
+  const nextFact = () => {
+    const len = (Array.isArray(FUN_FACTS) ? FUN_FACTS.length : 0) || 1;
+    if (len <= 1) return;
+    setFactIdx((p) => (p + 1) % len);
+    try { navigator.vibrate && navigator.vibrate(12); } catch {}
+  };
+  const prevFact = () => {
+    const len = (Array.isArray(FUN_FACTS) ? FUN_FACTS.length : 0) || 1;
+    if (len <= 1) return;
+    setFactIdx((p) => (p - 1 + len) % len);
+    try { navigator.vibrate && navigator.vibrate(12); } catch {}
+  };
+  const toggleFactsPaused = () => {
+    setFactsPaused((v) => {
+      const nv = !v;
+      try { navigator.vibrate && navigator.vibrate(nv ? 6 : 8); } catch {}
+      return nv;
+    });
+  };
+
+  // -------- RENDER --------
   const [entered, setEntered] = useState(false);
   useEffect(()=>{ const id = requestAnimationFrame(()=> setEntered(true)); return ()=> cancelAnimationFrame(id); }, []);
   return (
-    // add "team-fixed" helper class for mobile-specific styling + enter animation
-    <div className={`app-shell team-fixed fade-in-transition ${entered?'entered':''}`} style={{ paddingBottom: phase === 'STAKE' ? '96px' : undefined }}>
+    // add phase class + intro-on flag while category intro runs
+    <div className={`app-shell team-fixed fade-in-transition phase-${(phase||'').toLowerCase()} ${catIntro ? 'intro-on' : ''} ${entered?'entered':''}`} style={{ paddingBottom: phase === 'STAKE' ? '96px' : undefined }}>
       {/* Soft blurred backgrounds: team avatar + category icon */}
       {me?.avatar && (
         <div className="team-bg-avatar" aria-hidden style={{ backgroundImage: `url(${me.avatar})` }} />
@@ -834,179 +945,55 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       ); })()}
       {/* Header */}
       <header className="app-header category-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Avatar src={me?.avatar ?? defaultAvatar} />
-          <div className="team-name" style={{ fontSize: '1.24rem', fontWeight: 900 }}>{me?.name || fallbackName}</div>
-          <div className="bank" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div className="stat"><span className="icon coin lg" aria-hidden /> <div className="stat-num">{coins}</div></div>
-            <div className="stat"><span className="icon joker lg" aria-hidden /> <div className="stat-num">{quizJoker}</div></div>
+        <div className="left-head" style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+          <div
+            className={`avatar-wrap ${isReconnecting ? 'status-reconnecting' : (isConnected ? 'status-ok' : 'status-down')}`}
+            aria-label={isReconnecting ? 'Verbindung wird wiederhergestellt' : (isConnected ? 'Verbunden' : 'Getrennt')}
+            title={isReconnecting ? 'Reconnecting' : (isConnected ? 'Online' : 'Offline')}
+            role="status"
+          >
+            <Avatar src={assetUrl(me?.avatar ?? defaultAvatar)} className="team-header-avatar" />
           </div>
-          {/* Phase badge hidden for team to avoid overflow */}
-          {false && st?.currentCategory && (() => {
-            const k = catKey(st.currentCategory);
+          <div className="team-meta" style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <div
+              className={`team-name ${((me?.name || fallbackName)?.length > 10) ? 'two-line' : ''}`}
+              style={{ fontSize: '1.24rem', fontWeight: 900 }}
+            >
+              {me?.name || fallbackName}
+            </div>
+            {(() => {
+            const payout = Math.floor((st?.categoryPot || 0) / 3);
+            const overlayGain = resultMeta.myGain ?? payout;
+            const k = catKey(st?.currentCategory);
+            const title = showWinOverlay
+              ? (roundOutcome === 'share' ? 'Pot geteilt!' : 'Runde gewonnen!')
+              : 'Runde verloren';
             return (
-              <>
-                <img
-                  className="category-icon"
-                  key={k}
-                  src={`/categories/${k}.png`}
-                  alt={`${st.currentCategory} icon`}
-                  onError={(e) => {
-                    // PNG zuerst versuchen, dann auf SVG zur�ckfallen
-                    if (!e.currentTarget.dataset.fallbackSvg) {
-                      e.currentTarget.dataset.fallbackSvg = '1';
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = `/categories/${k}.svg`;
-                    }
-                  }}
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                  <span className="badge badge-alt" style={{ padding: '6px 10px' }}>{displayCatName(st.currentCategory)}</span>
-                  {st.phase === 'CATEGORY' && (
-                    <span className="round-info">Runde {Number(st.roundIndex) + 1}/3</span>
-                  )}
-                </div>
-              </>
+              <div className={`result-overlay__dialog round-result ${showWinOverlay ? 'win' : 'lose'} cat-${k || ''}`}>
+                <CoinRain type={showWinOverlay ? 'win' : 'lose'} />
+                {k && (
+                  <img
+                    className="category-icon lg"
+                    src={`/categories/${k}.png`}
+                    alt={cat || 'Kategorie'}
+                    onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; } }}
+                  />
+                )}
+                {showWinOverlay && (
+                  <div className="rr-badge">
+                    <span className="icon coin coin-sm" aria-hidden />+{overlayGain}
+                  </div>
+                )}
+                <h3 className="rr-title">{title}</h3>
+                {showWinOverlay && roundOutcome === 'share' && (
+                  <div className="rr-sub">Ihr teilt euch den Pot.</div>
+                )}
+                {!showWinOverlay && resultMeta.winners.length > 1 && (
+                  <div className="rr-sub">Andere Teams teilen sich den Pot.</div>
+                )}
+              </div>
             );
           })()}
-        </div>
-      </header>
-      {/* Category Intro Overlay */}
-      {catIntro && (
-        <CategoryIntro key={catIntro.ts} k={catIntro.k} name={catIntro.name} />
-      )}
- 
-      {/* Timer: only show when active */}
-      {(st?.phase==='CATEGORY' && endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
-        <div className="timer active">
-          <div
-            className="timer-bar"
-            style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }}
-          />
-          <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
-        </div>
-      )}
-      {/* If paused: frozen bar/time */}
-      {pausedAt && (
-        <div className="timer active">
-          <div
-            className="timer-bar"
-            style={{ transform: `scaleX(${Math.max(0, Math.min(1, (pausedAt.remaining / (duration || 1))))})` }}
-          />
-          <div className="timer-label">{pausedAt.remaining > 0 ? `${pausedAt.remaining}s` : '�'}</div>
-        </div>
-      )}
-
-      {/* Content */}
-      <main className="content">
-
-        {/* LOBBY: Satisfying wait + fun facts */}
-        {phase === 'LOBBY' && (
-          <section className="card lobby-card">
-            <h3>Kurze Pause</h3>
-            <p className="muted">Neue Runde startet gleich �</p>
-          </section>
-        )}
-
-        {/* Stake */}
-        {phase === 'STAKE' && (
-          <section className="card stake-section">
-            {st?.currentCategory && (()=>{ const k = catKey(st.currentCategory); return (
-              <div className="stake-watermark" style={{ backgroundImage: `url(/categories/${k}.png)` }} aria-hidden />
-            ); })()}
-            <div className="stake-content">
-              <h3 className="stake-title">Einsatz w�hlen</h3>
-              <div className="stake-grid">
-                <button
-                  className={`btn stake-btn ${stake === 3 ? 'btn-primary selected' : ''}`}
-                  disabled={coins < 3}
-                  onClick={() => setStake(3)}
-                  title="Setze 3 Coins"
-                aria-label="Einsatz 3 Coins"
-              >
-                <span className="stake-amt" aria-hidden><b>3</b><span className="icon coin coin-sm" /></span>
-              </button>
-              <button
-                className={`btn stake-btn ${stake === 6 ? 'btn-primary selected' : ''}`}
-                disabled={coins < 6}
-                onClick={() => setStake(6)}
-                title="Setze 6 Coins"
-                aria-label="Einsatz 6 Coins"
-              >
-                <span className="stake-amt" aria-hidden><b>6</b><span className="icon coin coin-sm" /></span>
-              </button>
-              {st?.teamLimit>2 && (
-                <button
-                  className={`btn stake-btn ${stake === 9 ? 'btn-primary selected' : ''}`}
-                  disabled={coins < 9}
-                  onClick={() => setStake(9)}
-                  title="Setze 9 Coins"
-                  aria-label="Einsatz 9 Coins"
-                >
-                  <span className="stake-amt" aria-hidden><b>9</b><span className="icon coin coin-sm" /></span>
-                </button>
-              )}
-              {coins === 0 && (
-                <button
-                  className={`btn stake-btn ${stake === 0 ? 'btn-primary selected' : ''}`}
-                  onClick={() => setStake(0)}
-                  title="Setze 0"
-                >
-                  <span className="stake-amt" aria-hidden><b>0</b><span className="icon coin coin-sm" /></span>
-                </button>
-              )}
-              </div>
-            {stake > 0 && (
-              <div className="stake-joker-wrap" style={{ marginTop: 12, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                <button
-                  type="button"
-                  className={`joker-toggle ${useJoker ? 'active' : ''} ${quizJoker > 0 ? '' : 'disabled'}`}
-                  onClick={() => { if (quizJoker > 0 && !inputLocked) setUseJoker(v => !v); }}
-                  aria-pressed={useJoker}
-                  aria-label={useJoker ? 'Joker aktiviert' : 'Joker einsetzen'}
-                  disabled={quizJoker === 0 || inputLocked}
-                >
-                  <img src="/jokerin.png" alt="Joker" />
-                </button>
-                <div className="muted stake-joker-hint" style={{ fontSize: '.95rem', fontWeight: 700, textAlign:'center' }}>
-                  {quizJoker > 0
-                    ? (useJoker ? 'Joker aktiviert' : 'Joker verf�gbar � tippe zum Aktivieren')
-                    : 'Kein Joker verf�gbar'}
-                </div>
-              </div>
-            )}
-            <button className="btn btn-cta stake-submit" onClick={sendStake} disabled={inputLocked} style={{ marginTop: 16, width:'100%' }}>
-              Einsatz senden
-            </button>
-            </div>
-          </section>
-        )}
-
-        {/* Hase */}
-        {phase === 'CATEGORY' && cat === 'Hase' && (
-          <section className="card">
-            <h3>Hase</h3>
-            <div style={{ display:'flex', flexDirection:'column', gap:10, marginTop:4 }}>
-              {haseAns.map((v, i) => (
-                <div key={i} className="row" style={{ alignItems:'center', gap:12 }}>
-                  <span className="pill" style={{ minWidth:42, textAlign:'center' }}>{i + 1}</span>
-                  <input
-                    id={`hase-name-${i + 1}`}
-                    name={`hase_name_${i + 1}`}
-                    className="input"
-                    placeholder={`Name ${i + 1}`}
-                    aria-label={`Name ${i + 1}`}
-                    autoComplete="off"
-                    value={v}
-                    onChange={(e) => {
-                      const a = [...haseAns];
-                      a[i] = e.target.value;
-                      setHaseAns(a);
-                    }}
-                    style={{ flex:1 }}
-                  />
-                </div>
-              ))}
             </div>
             <div className="row" style={{ marginTop: 12 }}>
               <button
@@ -1014,7 +1001,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 onClick={() => { socket.emit('team:hase:submit', { answers: haseAns }); if(!editMode) setEditMode(false); }}
                 disabled={inputLocked || submissionLocked}
               >{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>
                   {editMode ? 'Fertig' : 'Bearbeiten'}
                 </button>
@@ -1026,11 +1013,13 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Kranich */}
         {phase === 'CATEGORY' && cat === 'Kranich' && (
           <section className="card">
-            <h3>Kranich � {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
-            <p className="muted" style={{ marginTop: -6, marginBottom: 8 }}>
-              Ordne von <b>oben (niedrigster Wert)</b> nach <b>unten (h�chster Wert)</b> � gilt f�r jede gew�hlte Kategorie
-              (z. B. fr�hestes Jahr oben / j�ngstes unten, kleinste Anzahl oben / gr��te unten).
-            </p>
+            <h3>Kranich ? {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
 
             <label className="label" htmlFor="kranich-category">Sortierkategorie</label>
             <select
@@ -1069,7 +1058,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   onTouchMove={onTouchMoveRow(i)}
                   onTouchEnd={onTouchEndRow}
                 >
-                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element w�hlen / Reihenfolge anpassen</span>}</div>
+                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wählen / Reihenfolge anpassen</span>}</div>
                   <div className="row">
                     <button className="btn" disabled={i === 0} onClick={() => moveUp(i)}>
                       ?
@@ -1088,7 +1077,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={kranichSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1096,9 +1085,15 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         )}
 
         {/* Robbe */}
-        {phase === 'CATEGORY' && cat === 'Robbe' && (
+    {phase === 'CATEGORY' && cat === 'Robbe' && (
           <section className="card">
-            <h3>Robbe</h3>
+      <h3>Robbe ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
     <div className="muted" style={{ marginTop: -6, marginBottom: 8 }}>Verteile maximal 100% (nur 5%-Schritte). Rest: <b>{Math.max(0, 100 - robbeTotal)}%</b></div>
             {['a', 'b', 'c'].map((k) => (
               <div key={k} className="row">
@@ -1121,7 +1116,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             ))}
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:robbe:submit', { perc: robbe })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1129,14 +1124,20 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         )}
 
         {/* Eule */}
-        {phase === 'CATEGORY' && cat === 'Eule' && (
+    {phase === 'CATEGORY' && cat === 'Eule' && (
           <section className="card">
-            <h3>Eule</h3>
+      <h3>Eule ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
 
             {roundIndex === 0 && (
               <>
                 <p className="muted" style={{ marginTop: -6 }}>
-                  Nenne so viele Animationsfilme wie m�glich (bis zu 15).
+                  Nenne so viele Animationsfilme wie möglich (bis zu 15).
                 </p>
                 <div className="grid3">
                   {euleRound1.map((v, i) => (
@@ -1159,7 +1160,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </div>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-                  {hasSubmitted && !inputLocked && (
+                  {hasSubmitted && !inputLocked && !roundResolved && (
                     <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
                   )}
                 </div>
@@ -1192,7 +1193,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </div>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-                  {hasSubmitted && !inputLocked && (
+                  {hasSubmitted && !inputLocked && !roundResolved && (
                     <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
                   )}
                 </div>
@@ -1225,7 +1226,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </div>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-                  {hasSubmitted && !inputLocked && (
+                  {hasSubmitted && !inputLocked && !roundResolved && (
                     <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
                   )}
                 </div>
@@ -1235,9 +1236,15 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         )}
 
         {/* Wal */}
-        {phase === 'CATEGORY' && cat === 'Wal' && (
+    {phase === 'CATEGORY' && cat === 'Wal' && (
           <section className="card">
-            <h3>Wal</h3>
+      <h3>Wal ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
             <label className="label" htmlFor="wal-bid">Gebot</label>
             <input
               type="number"
@@ -1250,21 +1257,49 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             />
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:wal:submit', { bid: Number(walBid) || 0 })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
           </section>
         )}
 
-        {/* ��� ELCH ��� */}
+        {/* --- ELCH --- */}
         {phase === 'CATEGORY' && cat === 'Elch' && (
           <>
-            <section className="card" style={{ position:'relative' }}>
-              <h3>Elch</h3>
+    {/* Floating timer rendered via portal; only while running (hide on stop) */}
+  {(endsAt && endsAt > now) && typeof document !== 'undefined' && createPortal(
+              (
+                <div
+      className={`timer active floating ${(remainingSec <= 10) ? 'low' : ''}`}
+                  style={{
+                    position: 'fixed',
+        top: 'max(74px, calc(env(safe-area-inset-top) + 68px))',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+        width: 'min(520px, 92vw)',
+                    zIndex: 2147483601,
+                    pointerEvents: 'none',
+                  }}
+                  aria-live="polite"
+                >
+      <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+      <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+                </div>
+              ),
+              document.body
+            )}
+            <section className="card" data-elch-panel style={{ position:'relative' }}>
+              <h3>Elch ? Runde {Number(roundIndex) + 1}</h3>
+              {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+                <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                  <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                  <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+                </div>
+              )}
               {(st?.elch?.category || st?.elch?.exhausted) && (
                 <div className="muted" style={{ marginTop: -6, textAlign:'center', width:'100%', fontSize:'1rem', fontWeight:700 }}>
-                  {st?.elch?.category || '� Pool ersch�pft �'}
+                  {st?.elch?.category || '? Pool erschöpft ?'}
                 </div>
               )}
               <div className="muted" style={{ marginTop: 12, textAlign:'center' }}>
@@ -1274,7 +1309,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                       ? 'Warten bis Sprache gezogen.' // Placeholder ohne "Admin" Wortlaut
                       : (() => {
                           const myBuzz = Array.isArray(st?.elch?.buzzOrder) && st.elch.buzzOrder.some(b => b.teamId === fixedId);
-                          if (myBuzz) return 'Du hast gebuzzert � warte auf Entscheidung.';
+                          if (myBuzz) return 'Du hast gebuzzert ? warte auf Entscheidung.';
                           if (st?.elch?.buzzLocked) return 'Ein anderes Team war schneller.';
                           return 'Buzz ist frei.';
                         })()
@@ -1282,66 +1317,805 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               </div>
             </section>
             {(() => {
-              const el = st?.elch;
-              const hasCat = !!el?.category;
-              if (!hasCat) return null;
-              const locked = !!el?.buzzLocked;
-              const myBuzz = Array.isArray(el?.buzzOrder) && el.buzzOrder.some(b => b.teamId === fixedId);
-              const cls = `buzz-overlay ${locked ? 'buzz-locked' : 'buzz-free'}${myBuzz ? ' buzz-own' : ''}`;
-              // K�rzere Texte gew�nscht: "Zu sp�t" statt langer Satz
-              const label = !locked ? 'BUZZ' : (myBuzz ? 'DRAN' : 'ZU SP�T');
-              const canBuzz = !locked && !myBuzz && !inputLocked;
-              return (
+            const payout = Math.floor((st?.categoryPot || 0) / 3);
+            const overlayGain = resultMeta.myGain ?? payout;
+            const k = catKey(st?.currentCategory);
+            const title = showWinOverlay
+              ? (roundOutcome === 'share' ? 'Pot geteilt!' : 'Runde gewonnen!')
+              : 'Runde verloren';
+            return (
+              <div className={`result-overlay__dialog round-result ${showWinOverlay ? 'win' : 'lose'} cat-${k || ''}`}>
+                <CoinRain type={showWinOverlay ? 'win' : 'lose'} />
+                {k && (
+                  <img
+                    className="category-icon lg"
+                    src={`/categories/${k}.png`}
+                    alt={cat || 'Kategorie'}
+                    onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; } }}
+                  />
+                )}
+                {showWinOverlay && (
+                  <div className="rr-badge">
+                    <span className="icon coin coin-sm" aria-hidden />+{overlayGain}
+                  </div>
+                )}
+                <h3 className="rr-title">{title}</h3>
+                {showWinOverlay && roundOutcome === 'share' && (
+                  <div className="rr-sub">Ihr teilt euch den Pot.</div>
+                )}
+                {!showWinOverlay && resultMeta.winners.length > 1 && (
+                  <div className="rr-sub">Andere Teams teilen sich den Pot.</div>
+                )}
+              </div>
+            );
+          })()}
+            </div>
+            <div className="row" style={{ marginTop: 12 }}>
+              <button
+                className="btn btn-cta"
+                onClick={() => { socket.emit('team:hase:submit', { answers: haseAns }); if(!editMode) setEditMode(false); }}
+                disabled={inputLocked || submissionLocked}
+              >{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>
+                  {editMode ? 'Fertig' : 'Bearbeiten'}
+                </button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Kranich */}
+        {phase === 'CATEGORY' && cat === 'Kranich' && (
+          <section className="card">
+            <h3>Kranich ? {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+
+            <label className="label" htmlFor="kranich-category">Sortierkategorie</label>
+            <select
+              id="kranich-category"
+              name="kranich_category"
+              className="select"
+              value={kranichCategory}
+              onChange={(e) => setKranichCategory(e.target.value)}
+            >
+              {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+
+            <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
+              {kranichOrder.map((v, i) => (
                 <div
-                  className={cls}
-                  role="button"
-                  aria-label={canBuzz ? 'Buzz dr�cken' : 'Buzz gesperrt'}
-                  tabIndex={0}
-                  onClick={() => {
-                    if (canBuzz) {
-                      // Vibrationsfeedback (falls unterst�tzt)
-                      try { navigator.vibrate && navigator.vibrate([15, 40, 25]); } catch {}
-                      socket.emit('team:elch:buzz');
-                    }
+                  key={i}
+                  className={`row drag-row ${dragIdx===i ? 'dragging' : ''}`}
+                  style={{ justifyContent: 'space-between' }}
+                  draggable
+                  onDragStart={(e) => { e.dataTransfer.setData('text/plain', String(i)); }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const from = Number(e.dataTransfer.getData('text/plain'));
+                    if (Number.isNaN(from) || from === i) return;
+                    const a = [...kranichOrder];
+                    const [item] = a.splice(from, 1);
+                    a.splice(i, 0, item);
+                    setKranichOrder(a);
                   }}
-                  onKeyDown={e => {
-                    if ((e.key === 'Enter' || e.key === ' ') && canBuzz) {
-                      try { navigator.vibrate && navigator.vibrate([15, 40, 25]); } catch {}
-                      socket.emit('team:elch:buzz');
-                    }
-                  }}
-                  style={{outline:'none'}}
+                  onTouchStart={onTouchStartRow(i)}
+                  onTouchMove={onTouchMoveRow(i)}
+                  onTouchEnd={onTouchEndRow}
                 >
-                  <div className="buzz-label">{label}</div>
+                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wählen / Reihenfolge anpassen</span>}</div>
+                  <div className="row">
+                    <button className="btn" disabled={i === 0} onClick={() => moveUp(i)}>
+                      ?
+                    </button>
+                    <button
+                      className="btn"
+                      disabled={i === kranichOrder.length - 1}
+                      onClick={() => moveDown(i)}
+                    >
+                      ?
+                    </button>
+                  </div>
                 </div>
-              );
-            })()}
+              ))}
+            </div>
+
+            <div className="row" style={{ marginTop: 12 }}>
+              <button className="btn btn-cta" onClick={kranichSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Robbe */}
+    {phase === 'CATEGORY' && cat === 'Robbe' && (
+          <section className="card">
+      <h3>Robbe ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+    <div className="muted" style={{ marginTop: -6, marginBottom: 8 }}>Verteile maximal 100% (nur 5%-Schritte). Rest: <b>{Math.max(0, 100 - robbeTotal)}%</b></div>
+            {['a', 'b', 'c'].map((k) => (
+              <div key={k} className="row">
+                <span className="pill">{k.toUpperCase()}</span>
+                <input
+                  type="number"
+                  id={`robbe-${k}`}
+                  name={`robbe_${k}`}
+                  className="input"
+                  inputMode="numeric"
+      step={5}
+      min={0}
+      max={100}
+                  aria-label={`Prozent Option ${k.toUpperCase()}`}
+                  value={robbe[k]}
+                  onChange={(e) => setRobbeClamped(k, e.target.value)}
+                />
+                <span>%</span>
+              </div>
+            ))}
+            <div className="row" style={{ marginTop: 12 }}>
+              <button className="btn btn-cta" onClick={() => socket.emit('team:robbe:submit', { perc: robbe })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Eule */}
+    {phase === 'CATEGORY' && cat === 'Eule' && (
+          <section className="card">
+      <h3>Eule ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+
+            {roundIndex === 0 && (
+              <>
+                <p className="muted" style={{ marginTop: -6 }}>
+                  Nenne so viele Animationsfilme wie möglich (bis zu 15).
+                </p>
+                <div className="grid3">
+                  {euleRound1.map((v, i) => (
+                    <input
+                      key={i}
+                      id={`eule-r1-${i + 1}`}
+                      name={`eule_r1_${i + 1}`}
+                      className="input"
+                      placeholder={`Film ${i + 1}`}
+                      aria-label={`Film ${i + 1}`}
+                      autoComplete="off"
+                      value={v}
+                      onChange={(e) => {
+                        const arr = [...euleRound1];
+                        arr[i] = e.target.value;
+                        setEuleRound1(arr);
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+                  {hasSubmitted && !inputLocked && !roundResolved && (
+                    <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {roundIndex === 1 && (
+              <>
+                <p className="muted" style={{ marginTop: -6 }}>
+                  Erkenne die 3 unkenntlichen Poster (links ? rechts).
+                </p>
+                <div className="grid3">
+                  {euleRound3.map((v, i) => (
+                    <input
+                      key={i}
+                      id={`eule-r3-${i + 1}`}
+                      name={`eule_r3_${i + 1}`}
+                      className="input"
+                      placeholder={`Poster ${i + 1}`}
+                      aria-label={`Poster ${i + 1}`}
+                      autoComplete="off"
+                      value={v}
+                      onChange={(e) => {
+                        const arr = [...euleRound3];
+                        arr[i] = e.target.value;
+                        setEuleRound3(arr);
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+                  {hasSubmitted && !inputLocked && !roundResolved && (
+                    <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {roundIndex === 2 && (
+              <>
+                <p className="muted" style={{ marginTop: -6 }}>
+                  Erkenne, was auf den 4 Postern fehlt (links ? rechts).
+                </p>
+                <div className="grid2">
+                  {euleRound4.map((v, i) => (
+                    <input
+                      key={i}
+                      id={`eule-r4-${i + 1}`}
+                      name={`eule_r4_${i + 1}`}
+                      className="input"
+                      placeholder={`Poster ${i + 1}`}
+                      aria-label={`Poster ${i + 1}`}
+                      autoComplete="off"
+                      value={v}
+                      onChange={(e) => {
+                        const arr = [...euleRound4];
+                        arr[i] = e.target.value;
+                        setEuleRound4(arr);
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+                  {hasSubmitted && !inputLocked && !roundResolved && (
+                    <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+                  )}
+                </div>
+              </>
+            )}
+          </section>
+        )}
+
+        {/* Wal */}
+    {phase === 'CATEGORY' && cat === 'Wal' && (
+          <section className="card">
+      <h3>Wal ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+            <label className="label" htmlFor="wal-bid">Gebot</label>
+            <input
+              type="number"
+              id="wal-bid"
+              name="wal_bid"
+              className="input"
+              inputMode="numeric"
+              value={walBid}
+              onChange={(e) => setWalBid(e.target.value)}
+            />
+            <div className="row" style={{ marginTop: 12 }}>
+              <button className="btn btn-cta" onClick={() => socket.emit('team:wal:submit', { bid: Number(walBid) || 0 })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* --- ELCH --- */}
+        {phase === 'CATEGORY' && cat === 'Elch' && (
+          <>
+    {/* Floating timer rendered via portal; only while running (hide on stop) */}
+  {(endsAt && endsAt > now) && typeof document !== 'undefined' && createPortal(
+              (
+                <div
+      className={`timer active floating ${(remainingSec <= 10) ? 'low' : ''}`}
+                  style={{
+                    position: 'fixed',
+        top: 'max(74px, calc(env(safe-area-inset-top) + 68px))',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+        width: 'min(520px, 92vw)',
+                    zIndex: 2147483601,
+                    pointerEvents: 'none',
+                  }}
+                  aria-live="polite"
+                >
+      <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+      <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+                </div>
+              ),
+              document.body
+            )}
+            <section className="card" data-elch-panel style={{ position:'relative' }}>
+              <h3>Elch ? Runde {Number(roundIndex) + 1}</h3>
+              {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+                <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                  <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                  <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+                </div>
+              )}
+              {(st?.elch?.category || st?.elch?.exhausted) && (
+                <div className="muted" style={{ marginTop: -6, textAlign:'center', width:'100%', fontSize:'1rem', fontWeight:700 }}>
+                  {st?.elch?.category || '? Pool erschöpft ?'}
+                </div>
+              )}
+              <div className="muted" style={{ marginTop: 12, textAlign:'center' }}>
+                {st?.elch?.exhausted
+                  ? 'Alle Sprachen verbraucht.'
+                  : (!st?.elch?.category
+                      ? 'Warten bis Sprache gezogen.' // Placeholder ohne "Admin" Wortlaut
+                      : (() => {
+                          const myBuzz = Array.isArray(st?.elch?.buzzOrder) && st.elch.buzzOrder.some(b => b.teamId === fixedId);
+                          if (myBuzz) return 'Du hast gebuzzert ? warte auf Entscheidung.';
+                          if (st?.elch?.buzzLocked) return 'Ein anderes Team war schneller.';
+                          return 'Buzz ist frei.';
+                        })()
+                    )}
+              </div>
+            </section>
+            {(() => {
+            const payout = Math.floor((st?.categoryPot || 0) / 3);
+            const overlayGain = resultMeta.myGain ?? payout;
+            const k = catKey(st?.currentCategory);
+            const title = showWinOverlay
+              ? (roundOutcome === 'share' ? 'Pot geteilt!' : 'Runde gewonnen!')
+              : 'Runde verloren';
+            return (
+              <div className={`result-overlay__dialog round-result ${showWinOverlay ? 'win' : 'lose'} cat-${k || ''}`}>
+                <CoinRain type={showWinOverlay ? 'win' : 'lose'} />
+                {k && (
+                  <img
+                    className="category-icon lg"
+                    src={`/categories/${k}.png`}
+                    alt={cat || 'Kategorie'}
+                    onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; } }}
+                  />
+                )}
+                {showWinOverlay && (
+                  <div className="rr-badge">
+                    <span className="icon coin coin-sm" aria-hidden />+{overlayGain}
+                  </div>
+                )}
+                <h3 className="rr-title">{title}</h3>
+                {showWinOverlay && roundOutcome === 'share' && (
+                  <div className="rr-sub">Ihr teilt euch den Pot.</div>
+                )}
+                {!showWinOverlay && resultMeta.winners.length > 1 && (
+                  <div className="rr-sub">Andere Teams teilen sich den Pot.</div>
+                )}
+              </div>
+            );
+          })()}
+            </div>
+            <div className="row" style={{ marginTop: 12 }}>
+              <button
+                className="btn btn-cta"
+                onClick={() => { socket.emit('team:hase:submit', { answers: haseAns }); if(!editMode) setEditMode(false); }}
+                disabled={inputLocked || submissionLocked}
+              >{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>
+                  {editMode ? 'Fertig' : 'Bearbeiten'}
+                </button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Kranich */}
+        {phase === 'CATEGORY' && cat === 'Kranich' && (
+          <section className="card">
+            <h3>Kranich ? {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+
+            <label className="label" htmlFor="kranich-category">Sortierkategorie</label>
+            <select
+              id="kranich-category"
+              name="kranich_category"
+              className="select"
+              value={kranichCategory}
+              onChange={(e) => setKranichCategory(e.target.value)}
+            >
+              {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+
+            <div style={{ marginTop: 10, display: 'grid', gap: 8 }}>
+              {kranichOrder.map((v, i) => (
+                <div
+                  key={i}
+                  className={`row drag-row ${dragIdx===i ? 'dragging' : ''}`}
+                  style={{ justifyContent: 'space-between' }}
+                  draggable
+                  onDragStart={(e) => { e.dataTransfer.setData('text/plain', String(i)); }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const from = Number(e.dataTransfer.getData('text/plain'));
+                    if (Number.isNaN(from) || from === i) return;
+                    const a = [...kranichOrder];
+                    const [item] = a.splice(from, 1);
+                    a.splice(i, 0, item);
+                    setKranichOrder(a);
+                  }}
+                  onTouchStart={onTouchStartRow(i)}
+                  onTouchMove={onTouchMoveRow(i)}
+                  onTouchEnd={onTouchEndRow}
+                >
+                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wählen / Reihenfolge anpassen</span>}</div>
+                  <div className="row">
+                    <button className="btn" disabled={i === 0} onClick={() => moveUp(i)}>
+                      ?
+                    </button>
+                    <button
+                      className="btn"
+                      disabled={i === kranichOrder.length - 1}
+                      onClick={() => moveDown(i)}
+                    >
+                      ?
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="row" style={{ marginTop: 12 }}>
+              <button className="btn btn-cta" onClick={kranichSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Robbe */}
+    {phase === 'CATEGORY' && cat === 'Robbe' && (
+          <section className="card">
+      <h3>Robbe ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+    <div className="muted" style={{ marginTop: -6, marginBottom: 8 }}>Verteile maximal 100% (nur 5%-Schritte). Rest: <b>{Math.max(0, 100 - robbeTotal)}%</b></div>
+            {['a', 'b', 'c'].map((k) => (
+              <div key={k} className="row">
+                <span className="pill">{k.toUpperCase()}</span>
+                <input
+                  type="number"
+                  id={`robbe-${k}`}
+                  name={`robbe_${k}`}
+                  className="input"
+                  inputMode="numeric"
+      step={5}
+      min={0}
+      max={100}
+                  aria-label={`Prozent Option ${k.toUpperCase()}`}
+                  value={robbe[k]}
+                  onChange={(e) => setRobbeClamped(k, e.target.value)}
+                />
+                <span>%</span>
+              </div>
+            ))}
+            <div className="row" style={{ marginTop: 12 }}>
+              <button className="btn btn-cta" onClick={() => socket.emit('team:robbe:submit', { perc: robbe })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Eule */}
+    {phase === 'CATEGORY' && cat === 'Eule' && (
+          <section className="card">
+      <h3>Eule ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+
+            {roundIndex === 0 && (
+              <>
+                <p className="muted" style={{ marginTop: -6 }}>
+                  Nenne so viele Animationsfilme wie möglich (bis zu 15).
+                </p>
+                <div className="grid3">
+                  {euleRound1.map((v, i) => (
+                    <input
+                      key={i}
+                      id={`eule-r1-${i + 1}`}
+                      name={`eule_r1_${i + 1}`}
+                      className="input"
+                      placeholder={`Film ${i + 1}`}
+                      aria-label={`Film ${i + 1}`}
+                      autoComplete="off"
+                      value={v}
+                      onChange={(e) => {
+                        const arr = [...euleRound1];
+                        arr[i] = e.target.value;
+                        setEuleRound1(arr);
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+                  {hasSubmitted && !inputLocked && !roundResolved && (
+                    <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {roundIndex === 1 && (
+              <>
+                <p className="muted" style={{ marginTop: -6 }}>
+                  Erkenne die 3 unkenntlichen Poster (links ? rechts).
+                </p>
+                <div className="grid3">
+                  {euleRound3.map((v, i) => (
+                    <input
+                      key={i}
+                      id={`eule-r3-${i + 1}`}
+                      name={`eule_r3_${i + 1}`}
+                      className="input"
+                      placeholder={`Poster ${i + 1}`}
+                      aria-label={`Poster ${i + 1}`}
+                      autoComplete="off"
+                      value={v}
+                      onChange={(e) => {
+                        const arr = [...euleRound3];
+                        arr[i] = e.target.value;
+                        setEuleRound3(arr);
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+                  {hasSubmitted && !inputLocked && !roundResolved && (
+                    <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {roundIndex === 2 && (
+              <>
+                <p className="muted" style={{ marginTop: -6 }}>
+                  Erkenne, was auf den 4 Postern fehlt (links ? rechts).
+                </p>
+                <div className="grid2">
+                  {euleRound4.map((v, i) => (
+                    <input
+                      key={i}
+                      id={`eule-r4-${i + 1}`}
+                      name={`eule_r4_${i + 1}`}
+                      className="input"
+                      placeholder={`Poster ${i + 1}`}
+                      aria-label={`Poster ${i + 1}`}
+                      autoComplete="off"
+                      value={v}
+                      onChange={(e) => {
+                        const arr = [...euleRound4];
+                        arr[i] = e.target.value;
+                        setEuleRound4(arr);
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button className="btn btn-cta" onClick={euleSubmit} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+                  {hasSubmitted && !inputLocked && !roundResolved && (
+                    <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+                  )}
+                </div>
+              </>
+            )}
+          </section>
+        )}
+
+        {/* Wal */}
+    {phase === 'CATEGORY' && cat === 'Wal' && (
+          <section className="card">
+      <h3>Wal ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
+            <label className="label" htmlFor="wal-bid">Gebot</label>
+            <input
+              type="number"
+              id="wal-bid"
+              name="wal_bid"
+              className="input"
+              inputMode="numeric"
+              value={walBid}
+              onChange={(e) => setWalBid(e.target.value)}
+            />
+            <div className="row" style={{ marginTop: 12 }}>
+              <button className="btn btn-cta" onClick={() => socket.emit('team:wal:submit', { bid: Number(walBid) || 0 })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
+              {hasSubmitted && !inputLocked && !roundResolved && (
+                <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* --- ELCH --- */}
+        {phase === 'CATEGORY' && cat === 'Elch' && (
+          <>
+    {/* Floating timer rendered via portal; only while running (hide on stop) */}
+  {(endsAt && endsAt > now) && typeof document !== 'undefined' && createPortal(
+              (
+                <div
+      className={`timer active floating ${(remainingSec <= 10) ? 'low' : ''}`}
+                  style={{
+                    position: 'fixed',
+        top: 'max(74px, calc(env(safe-area-inset-top) + 68px))',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+        width: 'min(520px, 92vw)',
+                    zIndex: 2147483601,
+                    pointerEvents: 'none',
+                  }}
+                  aria-live="polite"
+                >
+      <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+      <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+                </div>
+              ),
+              document.body
+            )}
+            <section className="card" data-elch-panel style={{ position:'relative' }}>
+              <h3>Elch ? Runde {Number(roundIndex) + 1}</h3>
+              {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+                <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                  <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                  <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+                </div>
+              )}
+              {(st?.elch?.category || st?.elch?.exhausted) && (
+                <div className="muted" style={{ marginTop: -6, textAlign:'center', width:'100%', fontSize:'1rem', fontWeight:700 }}>
+                  {st?.elch?.category || '? Pool erschöpft ?'}
+                </div>
+              )}
+              <div className="muted" style={{ marginTop: 12, textAlign:'center' }}>
+                {st?.elch?.exhausted
+                  ? 'Alle Sprachen verbraucht.'
+                  : (!st?.elch?.category
+                      ? 'Warten bis Sprache gezogen.' // Placeholder ohne "Admin" Wortlaut
+                      : (() => {
+                          const myBuzz = Array.isArray(st?.elch?.buzzOrder) && st.elch.buzzOrder.some(b => b.teamId === fixedId);
+                          if (myBuzz) return 'Du hast gebuzzert ? warte auf Entscheidung.';
+                          if (st?.elch?.buzzLocked) return 'Ein anderes Team war schneller.';
+                          return 'Buzz ist frei.';
+                        })()
+                    )}
+              </div>
+            </section>
+            {(() => {
+            const payout = Math.floor((st?.categoryPot || 0) / 3);
+            const overlayGain = resultMeta.myGain ?? payout;
+            const k = catKey(st?.currentCategory);
+            const title = showWinOverlay
+              ? (roundOutcome === 'share' ? 'Pot geteilt!' : 'Runde gewonnen!')
+              : 'Runde verloren';
+            return (
+              <div className={`result-overlay__dialog round-result ${showWinOverlay ? 'win' : 'lose'} cat-${k || ''}`}>
+                <CoinRain type={showWinOverlay ? 'win' : 'lose'} />
+                {k && (
+                  <img
+                    className="category-icon lg"
+                    src={`/categories/${k}.png`}
+                    alt={cat || 'Kategorie'}
+                    onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; } }}
+                  />
+                )}
+                {showWinOverlay && (
+                  <div className="rr-badge">
+                    <span className="icon coin coin-sm" aria-hidden />+{overlayGain}
+                  </div>
+                )}
+                <h3 className="rr-title">{title}</h3>
+                {showWinOverlay && roundOutcome === 'share' && (
+                  <div className="rr-sub">Ihr teilt euch den Pot.</div>
+                )}
+                {!showWinOverlay && resultMeta.winners.length > 1 && (
+                  <div className="rr-sub">Andere Teams teilen sich den Pot.</div>
+                )}
+              </div>
+            );
+          })()}
+      {/* Bottom-centered language label visible during buzz + small icon above */}
+  {st?.elch?.category && (
+        <div
+                className="elch-language-footer"
+                style={{
+                  position: 'fixed',
+                  left: '50%',
+                  bottom: 12,
+                  transform: 'translateX(-50%)',
+      zIndex: 3000,
+                  pointerEvents: 'none',
+                  fontWeight: 900,
+                  fontSize: '1.05rem',
+                  textAlign: 'center',
+                  padding: '6px 12px',
+                  borderRadius: 12,
+                  background: 'rgba(0,0,0,0.35)',
+                  color: 'white',
+                  boxShadow: '0 8px 22px rgba(0,0,0,0.35)'
+                }}
+                aria-live="polite"
+              >
+                {st.elch.category}
+              </div>
+            )}
           </>
         )}
 
-        {/* B�r */}
-  {phase === 'CATEGORY' && cat === 'B�r' && (
+        {/* Bär */}
+  {phase === 'CATEGORY' && cat === 'Bär' && (
           <section className="card">
-            <h3>B�r</h3>
+            <h3>Bär ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
 
             {/* Runden-Hinweis */}
             {roundIndex === 0 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                Sch�tze die Flugdauer in <b>Stunden (Dezimal)</b>.
+                Schätze die Flugdauer in <b>Stunden (Dezimal)</b>.
               </p>
             )}
             {roundIndex === 1 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                Sch�tze die Anzahl Kitas in Deutschland.
+                Schätze die Anzahl Kitas in Deutschland.
               </p>
             )}
             {roundIndex === 2 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                Sch�tze die H�he des h�chsten Wolkenkratzers in <b>Metern</b>.
+                Schätze die Höhe des höchsten Wolkenkratzers in <b>Metern</b>.
               </p>
             )}
 
-            <label className="label">Deine Sch�tzung</label>
+            <label className="label">Deine Schätzung</label>
             <input
               className="input"
               inputMode={roundIndex === 0 ? 'decimal' : 'numeric'}
@@ -1357,7 +2131,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:baer:submit', { estimate: Number(baer) })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1365,14 +2139,20 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         )}
 
         {/* Fuchs */}
-        {phase === 'CATEGORY' && cat === 'Fuchs' && (
+    {phase === 'CATEGORY' && cat === 'Fuchs' && (
           <section className="card">
-            <h3>Fuchs</h3>
+      <h3>Fuchs ? Runde {Number(roundIndex) + 1}</h3>
+            {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
+              <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
+                <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
+                <div className="timer-label">{remainingSec > 0 ? `${remainingSec}s` : '-'}</div>
+              </div>
+            )}
             <label className="label">Dein Tipp</label>
             <input className="input" value={fuchs} onChange={(e) => setFuchs(e.target.value)} />
             <div className="row" style={{ marginTop: 12 }}>
               <button className="btn btn-cta" onClick={() => socket.emit('team:fuchs:submit', { guess: fuchs })} disabled={inputLocked || submissionLocked}>{sendLabel}</button>
-              {hasSubmitted && !inputLocked && (
+              {hasSubmitted && !inputLocked && !roundResolved && (
                 <button className="btn" type="button" onClick={()=>setEditMode(e=>!e)}>{editMode ? 'Fertig':'Bearbeiten'}</button>
               )}
             </div>
@@ -1385,7 +2165,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         <div className={`conn-banner ${isConnected ? '' : 'down'}`} role="status" aria-live="polite">
           <div className="conn-banner__dot" aria-hidden />
           <div className="conn-banner__text">
-            {isReconnecting ? 'Verbindung wird wiederhergestellt�' : (!isConnected ? 'Getrennt. Versuche neu zu verbinden�' : (connError ? `Fehler: ${connError}` : ''))}
+            {isReconnecting ? 'Verbindung wird wiederhergestellt?' : (!isConnected ? 'Getrennt. Versuche neu zu verbinden?' : (connError ? `Fehler: ${connError}` : ''))}
           </div>
           <button className="btn" onClick={() => socket.connect()} disabled={isReconnecting}>
             Neu verbinden
@@ -1446,7 +2226,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                     onError={(e)=>{ e.currentTarget.style.display='none'; }} />
                 </figure>
               )}
-              <div className="fact-text">{text}</div>
+              <div className="fact-text">{text}</div>\r\n              <footer className="fact-footer" aria-live="polite">Gleich geht's weiter</footer>
             </div>
           </div>
         );
@@ -1465,7 +2245,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                     onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; }}} />
                 </div>
                 <h2 className="category-summary__title">{categorySummary.category}</h2>
-                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} � Runden: {categorySummary.roundsPlayed}</div>
+                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} ? Runden: {categorySummary.roundsPlayed}</div>
               </div>
               <ul className="category-summary__list">
                 {earnEntries.map(([tid,coinsEarned],idx)=>{
@@ -1494,7 +2274,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       {phase === 'CATEGORY' && cat === 'Elch' && st?.elch?.category && (
         <>
           <ElchDrawFlash key={st.elch.category} text={st.elch.category} />
-          {/* ARIA-Live-Region f�r Screenreader: sagt gezogene Sprache an */}
+          {/* ARIA-Live-Region für Screenreader: sagt gezogene Sprache an */}
           <div style={{position:'absolute',left:'-9999px',height:'1px',width:'1px',overflow:'hidden'}} aria-live="polite" aria-atomic="true">
             {st.elch.category}
           </div>
@@ -1559,12 +2339,12 @@ function CategoryIntro({ k, name }){
     const map = {
       hase: 'Schau mir in die Augen',
       kranich: 'Ordnung muss sein',
-      robbe: 'Ich wei� was, was du nicht wei�t',
+      robbe: 'Ich wei? was, was du nicht weißt',
       eule: 'Augen auf bei der Filmwahl',
       fuchs: 'Very Important Silhouette',
       wal: 'Einer geht noch!',
-      elch: 'Buchstabier� das Ereignis mir',
-      baer: 'Sch�tz� me if you can',
+      elch: 'Buchstabier? das Ereignis mir',
+      baer: 'Schätz? me if you can',
     };
     return map[k] || (name || '');
   })();
@@ -1624,3 +2404,5 @@ function CategoryIntro({ k, name }){
     </div>
   );
 }
+
+
