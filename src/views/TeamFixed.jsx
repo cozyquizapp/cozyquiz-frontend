@@ -1,4 +1,4 @@
-ï»¿// frontend/src/views/TeamFixed.jsx
+// frontend/src/views/TeamFixed.jsx
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { clearOverlay, setOverlay } from '../utils/overlay';
 import { createPortal } from 'react-dom';
@@ -6,11 +6,11 @@ import socket, { connectWithTeamId } from '../socket.v2';
 import assetUrl from '../utils/assetUrl';
 import catKey from '../utils/catKey';
 
-// ZusÃ¤tzliche erlaubte Hosts (WLAN-IP hinzugefÃ¼gt)
+// Zusätzliche erlaubte Hosts (WLAN-IP hinzugefügt)
 const ALLOWED_CLIENT_HOSTS = [
   'localhost',
   '127.0.0.1',
-  '192.168.5.117', // WLAN fÃ¼r Teilnehmer
+  '192.168.5.117', // WLAN für Teilnehmer
 ];
 
 // Einmaliges Debug-Logging (optional)
@@ -65,7 +65,7 @@ const KRANICH_ROUNDS = [
     title: 'Social Media',
     items: ['TikTok', 'Facebook', 'Instagram', 'Twitter (X)'],
     categories: [
-      { id: 'gruendung', label: 'GrÃ¼ndungsjahr' },
+      { id: 'gruendung', label: 'Gründungsjahr' },
       { id: 'posts', label: 'Posts pro Minute' },
       { id: 'maus', label: 'Monatlich aktive Nutzer' },
     ],
@@ -75,7 +75,7 @@ const KRANICH_ROUNDS = [
     items: ['Taylor Swift', 'Ed Sheeran', 'Billie Eilish', 'TheWeeknd'],
     categories: [
       { id: 'geburtsjahr', label: 'Geburtsjahr' },
-      { id: 'song', label: 'MeistgehÃ¶rter Song (Spotify)'},
+      { id: 'song', label: 'Meistgehörter Song (Spotify)'},
       { id: 'ig', label: 'Instagram-Follower' },
     ],
   },
@@ -95,15 +95,15 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
   const cat = st?.currentCategory;
   const roundIndex = Number(st?.roundIndex || 0);
-  // Phase + RoundKey mÃ¼ssen vor erstem Gebrauch definiert sein (TDZ fix)
+  // Phase + RoundKey müssen vor erstem Gebrauch definiert sein (TDZ fix)
   const phase = st?.phase || 'LOBBY';
   const roundKey = `${st?.currentCategory || 'NONE'}#${st?.roundIndex || 0}#${st?.phase}`;
 
-  // FEHLTE: State fÃ¼r das letzte Ergebnis und den Key
+  // FEHLTE: State für das letzte Ergebnis und den Key
   const [lastResult, setLastResult] = useState(null);
   const lastResultKey = useRef('');
 
-  // EinsÃ¤tze
+  // Einsätze
   const [stake, setStake] = useState(0);
   const [stakeSent, setStakeSent] = useState(false);
   const [useJoker, setUseJoker] = useState(false);
@@ -169,7 +169,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   // Wal
   const [walBid, setWalBid] = useState(0);
 
-  // BÃ¤r
+  // Bär
   const [baer, setBaer] = useState('');
 
   // Fuchs
@@ -187,7 +187,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
   }, [roundKey]);
 
-  // Erkennen ob schon etwas fÃ¼r aktuelle Kategorie abgegeben wurde
+  // Erkennen ob schon etwas für aktuelle Kategorie abgegeben wurde
   const mySub = (st && st.submissions && typeof st.submissions === 'object') ? (st.submissions[fixedId] || {}) : {};
   const hasSubmitted = useMemo(()=>{
     if (phase !== 'CATEGORY') return false;
@@ -201,7 +201,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         if (roundIndex === 2) return Array.isArray(mySub.r4) && mySub.r4.some(a=>a && a.trim());
         return false;
       case 'Wal':    return typeof mySub.bid === 'number';
-      case 'BÃ¤r':    return typeof mySub.estimate === 'number';
+      case 'Bär':    return typeof mySub.estimate === 'number';
       case 'Fuchs':  return typeof mySub.guess === 'string' && mySub.guess.trim().length>0;
       default: return false;
     }
@@ -209,12 +209,12 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const submissionLocked = hasSubmitted && !editMode; // UI sperren
   const sendLabel = editMode ? 'Aktualisieren' : (hasSubmitted ? 'Gesendet' : 'Senden');
 
-  // Timer â€“ lokales Ticken
-  // Ref fÃ¼r haptisches Feedback bei "Zu spÃ¤t" (Buzz zu spÃ¤t)
+  // Timer – lokales Ticken
+  // Ref für haptisches Feedback bei "Zu spät" (Buzz zu spät)
   const zuSpaetRef = useRef(false);
   // Debounce multiple buzz emits on mobile
   const buzzLockRef = useRef(false);
-  // Haptisches Feedback bei "Zu spÃ¤t" (locked, nicht myBuzz, nur Elch)
+  // Haptisches Feedback bei "Zu spät" (locked, nicht myBuzz, nur Elch)
   useEffect(() => {
     if (st?.currentCategory === 'Elch') {
       const el = st?.elch;
@@ -232,7 +232,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const [now, setNow] = useState(Date.now());
   const [timerWasActive, setTimerWasActive] = useState(false);
   const timerRoundKeyRef = useRef('');
-  // NEU: Pause-Status fÃ¼r Team-Ansicht
+  // NEU: Pause-Status für Team-Ansicht
   const [pausedAt, setPausedAt] = useState(null);
   // Header elevation on scroll
   useEffect(() => {
@@ -261,48 +261,48 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   const FUN_FACTS = useRef([
     // 80er-Motto
     '80er-Style: Schulterpolster und Neonfarben - je knalliger, desto besser!',
-    'Walkman-Zeit: Mixtapes to go â€“ KopfhÃ¶rer wurden zum Accessoire.',
-    'Haar-Ikonen: Vokuhila und FÃ¶hnfrisuren â€“ Haarsprayverbrauch auf Rekordniveau.',
-    'Aerobic-Look: Leggings, StirnbÃ¤nder und TrainingsanzÃ¼ge prÃ¤gten die Streetwear.',
+    'Walkman-Zeit: Mixtapes to go – Kopfhörer wurden zum Accessoire.',
+    'Haar-Ikonen: Vokuhila und Föhnfrisuren – Haarsprayverbrauch auf Rekordniveau.',
+    'Aerobic-Look: Leggings, Stirnbänder und Trainingsanzüge prägten die Streetwear.',
     // Arendal & Umgebung
-  { text: 'Arendal liegt an der SÃ¼dkÃ¼ste Norwegens (Agder) am Skagerrak.', img: '/funfacts/arendal.jpg', alt: 'Blick auf Arendal an der SÃ¼dkÃ¼ste Norwegens' },
-  { text: 'Die Altstadt rund um den Hafen â€žPollenâ€œ ist fÃ¼r HolzhÃ¤user und CafÃ©s bekannt.', img: '/funfacts/Arendal_Pollen.png', alt: 'HolzhÃ¤user und CafÃ©s am Hafen Pollen in Arendal' },
-  { text: 'Jeden August: â€žArendalsukaâ€œ â€“ Norwegens groÃŸe Demokratie-/Politik-Woche.', img: '/funfacts/arendalsuka.jpg', alt: 'Menschen und StÃ¤nde bei der Arendalsuka' },
-  { text: 'TromÃ¸y & HisÃ¸y: Insel-Feeling â€“ Hove ist ein Top-Ausflugsziel.', img: '/funfacts/stranhove.jpg', alt: 'Strand Hove auf einer der Inseln bei Arendal' },
-  { text: 'Arendal war im 19. Jh. ein wichtiges Zentrum fÃ¼r Segelschifffahrt.', img: '/funfacts/historic.png', alt: 'Historisches Segelschiff / maritime Szene in Arendal' },
-  { text: 'Der Fluss Nidelva mÃ¼ndet hier ins Meer â€“ perfekt fÃ¼r Kajak & SUP.', img: '/funfacts/sup.png', alt: 'SUP oder Kajak auf dem Nidelva vor Arendal' },
+  { text: 'Arendal liegt an der Südküste Norwegens (Agder) am Skagerrak.', img: '/funfacts/arendal.jpg', alt: 'Blick auf Arendal an der Südküste Norwegens' },
+  { text: 'Die Altstadt rund um den Hafen „Pollen“ ist für Holzhäuser und Cafés bekannt.', img: '/funfacts/Arendal_Pollen.png', alt: 'Holzhäuser und Cafés am Hafen Pollen in Arendal' },
+  { text: 'Jeden August: „Arendalsuka“ – Norwegens große Demokratie-/Politik-Woche.', img: '/funfacts/arendalsuka.jpg', alt: 'Menschen und Stände bei der Arendalsuka' },
+  { text: 'Tromøy & Hisøy: Insel-Feeling – Hove ist ein Top-Ausflugsziel.', img: '/funfacts/stranhove.jpg', alt: 'Strand Hove auf einer der Inseln bei Arendal' },
+  { text: 'Arendal war im 19. Jh. ein wichtiges Zentrum für Segelschifffahrt.', img: '/funfacts/historic.png', alt: 'Historisches Segelschiff / maritime Szene in Arendal' },
+  { text: 'Der Fluss Nidelva mündet hier ins Meer – perfekt für Kajak & SUP.', img: '/funfacts/sup.png', alt: 'SUP oder Kajak auf dem Nidelva vor Arendal' },
     // Spielerisch / Humor
     'Hier sagt man: Das Team mit dem besten Outfit holt den Style-Pokal. ??',
-    'Johannes ist objektiv der beste Moderator â€“ steht so im Skript. ??',
+    'Johannes ist objektiv der beste Moderator – steht so im Skript. ??',
     'Fun Fact: 100% der Gewinnerteams hatten heute bereits Wasser getrunken. ??',
-    'GerÃ¼cht: Wer wÃ¤hrend der Pause tief durchatmet, erhÃ¶ht die Punktzahl um +0 (aber fÃ¼hlt sich besser).',
-    'Studien sagen: High-Five erhÃ¶ht kurzfristig die Team-SynchronitÃ¤t um 8%. ?',
+    'Gerücht: Wer während der Pause tief durchatmet, erhöht die Punktzahl um +0 (aber fühlt sich besser).',
+    'Studien sagen: High-Five erhöht kurzfristig die Team-Synchronität um 8%. ?',
     'Kurze Pause = Gehirn-Refresh. Schon Blinzeln bringt Mini-Reboot.',
   // animal-related facts removed (Wal, Fuchs)
-  'Micro-Pause: Schultern hoch â€“ halten â€“ loslassen. Mini-Reset.',
-  'Wer summt, reguliert Stress. Summen zÃ¤hlt als Strategie. ??',
+  'Micro-Pause: Schultern hoch – halten – loslassen. Mini-Reset.',
+  'Wer summt, reguliert Stress. Summen zählt als Strategie. ??',
   'Fun Fact: Teams mit klaren Rollen spielen oft ruhiger.',
-  'â€žIch hab da eine Theorieâ€¦â€œ â€“ berÃ¼hmte letzte Worte vor Plot-Twist.',
+  '„Ich hab da eine Theorie…“ – berühmte letzte Worte vor Plot-Twist.',
   'Die meisten spontanen Ideen kommen Sekunden NACH einem kurzem Blick weg vom Screen.',
-  'Rainbow-Trivia: In Norwegen sieht man hÃ¤ufig DoppelregenbÃ¶gen â€“ extra GlÃ¼ck? ??',
-  'Wer laut gewinnt, gewinnt doppelt (gefÃ¼hlt).',
-  // removed: 'Legend says: Saying "Wal" zu ernst lÃ¶st mystische KrÃ¤fte aus.'
-  'Brain-Boost: Tief ein â€“ 4s halten â€“ 6s aus. Parasympathikus aktiviert.',
+  'Rainbow-Trivia: In Norwegen sieht man häufig Doppelregenbögen – extra Glück? ??',
+  'Wer laut gewinnt, gewinnt doppelt (gefühlt).',
+  // removed: 'Legend says: Saying "Wal" zu ernst löst mystische Kräfte aus.'
+  'Brain-Boost: Tief ein – 4s halten – 6s aus. Parasympathikus aktiviert.',
   'Wenn ihr diesen Fact nochmal seht: Gratulation, ihr habt das Loop-Ei gefunden.',
-  // Beispiel mit Bild (fÃ¼ge eigene Dateien in /funfacts/ hinzu)
-  { text: 'Arendal Hafen â€“ historische Holzfassaden und Segelgeschichte live.', img: '/funfacts/hafen.jpg', alt: 'Hafen von Arendal mit Booten' },
-  { text: 'Typischer norwegischer SchÃ¤rengarten bei Abendlicht â€“ ruhig & weit.', img: '/funfacts/schaereninsel.jpg', alt: 'SchÃ¤reninsel bei Abendlicht' },
-  // Neue Bild-Facts (zusÃ¤tzliche EintrÃ¤ge)
+  // Beispiel mit Bild (füge eigene Dateien in /funfacts/ hinzu)
+  { text: 'Arendal Hafen – historische Holzfassaden und Segelgeschichte live.', img: '/funfacts/hafen.jpg', alt: 'Hafen von Arendal mit Booten' },
+  { text: 'Typischer norwegischer Schärengarten bei Abendlicht – ruhig & weit.', img: '/funfacts/schaereninsel.jpg', alt: 'Schäreninsel bei Abendlicht' },
+  // Neue Bild-Facts (zusätzliche Einträge)
   { text: '80er-Style: Schulterpolster und Neonfarben - je knalliger, desto besser!', img: '/funfacts/80er-style.jpg', alt: '80er-Style mit Neonfarben und Schulterpolstern' },
-  { text: 'Walkman-Zeit: Mixtapes to go - KopfhÃ¶rer wurden zum Accessoire.', img: '/funfacts/walkman.jpg', alt: 'Walkman und KopfhÃ¶rer als Accessoire' },
-  { text: 'Haar-Ikonen: Vokuhila und FÃ¶hnfrisuren - Haarsprayverbrauch auf Rekordniveau.', img: '/funfacts/Frisuren.png', alt: '80er-Jahre Frisuren und Vokuhila' },
-  { text: 'Aerobic-Look: Leggings, StirnbÃ¤nder und TrainingsanzÃ¼ge prÃ¤gten die Streetwear.', img: '/funfacts/aerobic.png', alt: 'Aerobic-Look mit Leggings und Stirnband' },
+  { text: 'Walkman-Zeit: Mixtapes to go - Kopfhörer wurden zum Accessoire.', img: '/funfacts/walkman.jpg', alt: 'Walkman und Kopfhörer als Accessoire' },
+  { text: 'Haar-Ikonen: Vokuhila und Föhnfrisuren - Haarsprayverbrauch auf Rekordniveau.', img: '/funfacts/Frisuren.png', alt: '80er-Jahre Frisuren und Vokuhila' },
+  { text: 'Aerobic-Look: Leggings, Stirnbänder und Trainingsanzüge prägten die Streetwear.', img: '/funfacts/aerobic.png', alt: 'Aerobic-Look mit Leggings und Stirnband' },
   { text: 'Kaffeefakt: Geruch allein kann Aufmerksamkeit kurz steigern.', img: '/funfacts/kaffee.png', webp: '/funfacts/kaffee.webp', avif: '/funfacts/kaffee.avif', alt: 'Tasse Kaffee, Duft steigt auf' },
-  { text: 'Rainbow-Trivia: In Norwegen sieht man hÃ¤ufig DoppelregenbÃ¶gen - extra GlÃ¼ck?', img: '/funfacts/doppelregenbogen.jpg', alt: 'Doppelregenbogen am Himmel' },
+  { text: 'Rainbow-Trivia: In Norwegen sieht man häufig Doppelregenbögen - extra Glück?', img: '/funfacts/doppelregenbogen.jpg', alt: 'Doppelregenbogen am Himmel' },
   // Drei kleine Witze als Fun-Facts (auf Wunsch, mit Quelle)
-  'Witz: Warum kÃ¶nnen Geister so schlecht lÃ¼gen? Weil man durch sie hindurchsieht. - ChatGPT',
-  'Witz: Ich habe einen Witz Ã¼ber Zeitreisen, aber du mochtest ihn gestern schon. - ChatGPT',
-  'Witz: Warum hat der Computer eine Brille? Weil er seine Windows nicht schlieÃŸen kann. - ChatGPT',
+  'Witz: Warum können Geister so schlecht lügen? Weil man durch sie hindurchsieht. - ChatGPT',
+  'Witz: Ich habe einen Witz über Zeitreisen, aber du mochtest ihn gestern schon. - ChatGPT',
+  'Witz: Warum hat der Computer eine Brille? Weil er seine Windows nicht schließen kann. - ChatGPT',
   ]).current;
   const [showFacts, setShowFacts] = useState(true);
   const [factIdx, setFactIdx] = useState(0);
@@ -400,12 +400,12 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     };
     const onTeams = (list) => {
       setTeams(list);
-      // Initial-Join nur ausfÃ¼hren, wenn Team noch nicht existiert (z. B. direkter Aufruf der Team-URL)
+      // Initial-Join nur ausführen, wenn Team noch nicht existiert (z. B. direkter Aufruf der Team-URL)
       if (!didInitJoinRef.current) {
         const exists = Array.isArray(list) && list.some(t => t.id === fixedId);
         if (!exists) {
           didInitJoinRef.current = true;
-          // Versuche, gespeicherte Session zu nutzen (bewahrt gewÃ¤hlten Avatar/Name)
+          // Versuche, gespeicherte Session zu nutzen (bewahrt gewählten Avatar/Name)
           let stored = null;
           try { stored = JSON.parse(localStorage.getItem('teamSession')||'null'); } catch {}
           if (stored && stored.id === fixedId) {
@@ -418,7 +418,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       }
     };
 
-    // Ergebnis direkt empfangen und in den State eintragen (robust fÃ¼r verschiedene Strukturen)
+    // Ergebnis direkt empfangen und in den State eintragen (robust für verschiedene Strukturen)
     const onResultAnnounce = (result) => {
       // Debug: Zeige das empfangene Ergebnisobjekt in der Konsole
       console.log('[result:announce]', result);
@@ -484,7 +484,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     s.io.on('reconnect', onReconnect);
     s.on('connect_error', onConnectError);
 
-    // Initialen State/Teams anfordern; Join wird (falls nÃ¶tig) im onTeams-Handler erledigt
+    // Initialen State/Teams anfordern; Join wird (falls nötig) im onTeams-Handler erledigt
     s.emit('requestState');
     s.emit('requestTeams');
 
@@ -503,7 +503,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     };
   }, [fixedId, defaultName, defaultAvatar]);
 
-  // NEU: lastResult zurÃ¼cksetzen, wenn Runde/Kategorie wechselt
+  // NEU: lastResult zurücksetzen, wenn Runde/Kategorie wechselt
   useEffect(() => {
     const key = `${cat}#${roundIndex}`;
     if (lastResultKey.current !== key) {
@@ -516,7 +516,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   }, [cat, roundIndex]);
 
   const me = useMemo(() => teams.find((t) => t.id === fixedId), [teams, fixedId]);
-  // Fallback: falls Team noch nicht Ã¼ber teamsUpdated da ist, versuche gespeicherten Namen
+  // Fallback: falls Team noch nicht über teamsUpdated da ist, versuche gespeicherten Namen
   let fallbackName = defaultName;
   if(!me){
     try {
@@ -524,7 +524,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       if(stored) fallbackName = stored;
     } catch {}
   }
-  // Debug: AuflÃ¶sung des Team-Namens beobachten
+  // Debug: Auflösung des Team-Namens beobachten
   useEffect(() => {
     try {
       console.debug('[TeamFixed] name resolve', { fixedId, meName: me?.name, fallbackName });
@@ -532,7 +532,6 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   }, [me?.name, fallbackName, fixedId]);
   const coins = me?.coins ?? 0;
   const quizJoker = me?.quizJoker ?? 0;
-  const teamDisplayName = (me?.name || fallbackName || '').toString().trim() || 'Team';
 
   // Keep screen awake during game (Wake Lock API)
   const wakeLockRef = useRef(null);
@@ -621,7 +620,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
 
   const displayCatName = (c) => {
     if (!c) return c;
-    if (c === 'B??r' || c === 'Baer') return 'BÃ¤r';
+    if (c === 'B??r' || c === 'Baer') return 'Bär';
     return c;
   };
 
@@ -688,7 +687,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         setPausedAt({ remaining: pausedRemaining });
       }
     } else {
-      // Wenn Timer wieder lÃ¤uft, Pause aufheben
+      // Wenn Timer wieder läuft, Pause aufheben
       if (endsAt && endsAt > now && pausedAt) setPausedAt(null);
       // Wenn Phase wechselt, Pause aufheben
       if (st?.phase !== 'CATEGORY' && pausedAt) setPausedAt(null);
@@ -717,7 +716,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       order: kranichOrder,
     });
 
-  // Eule submit â€“ Mapping: 0?r1, 1?r3, 2?r4
+  // Eule submit – Mapping: 0?r1, 1?r3, 2?r4
   const euleSubmit = () => {
     if (roundIndex === 0) {
       socket.emit('team:eule:submit', { r1: euleRound1 });
@@ -730,14 +729,14 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
   };
 
-  // Hilfsfunktion: Hole das Ergebnis-Objekt fÃ¼r die aktuelle Kategorie/Runde (robust fÃ¼r alle Strukturen)
+  // Hilfsfunktion: Hole das Ergebnis-Objekt für die aktuelle Kategorie/Runde (robust für alle Strukturen)
   function getCurrentResult() {
     // Zuerst: lastResult, falls passend
     if (lastResult && lastResult.category === cat && lastResult.roundIndex === roundIndex) {
       return lastResult;
     }
     if (!st) return null;
-    // 1. Suche nach st.results als Objekt mit Kategorie-SchlÃ¼ssel
+    // 1. Suche nach st.results als Objekt mit Kategorie-Schlüssel
     if (st.results && typeof st.results === 'object' && cat && st.results[cat]) {
       if (Array.isArray(st.results[cat])) {
         return st.results[cat][roundIndex] || null;
@@ -752,7 +751,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     }
     // 3. Suche nach st.result (Fallback)
     if (st.result && st.result.category === cat) return st.result;
-    // 4. Fallback: Suche nach einem Ergebnisobjekt, das winnerId fÃ¼r mein Team enthÃ¤lt
+    // 4. Fallback: Suche nach einem Ergebnisobjekt, das winnerId für mein Team enthält
     if (st.results && typeof st.results === 'object') {
       for (const key in st.results) {
         const entry = st.results[key];
@@ -782,16 +781,16 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     return null;
   })();
 
-  // RÃ¼ckmeldungstexte fÃ¼r jede Kategorie
+  // Rückmeldungstexte für jede Kategorie
   const resultFeedback = useMemo(() => {
-    // Zeige Feedback, sobald ein Gewinner existiert (unabhÃ¤ngig von phase)
+    // Zeige Feedback, sobald ein Gewinner existiert (unabhängig von phase)
     if (didMyTeamWin == null) return null;
     let msg = '';
     let emoji = didMyTeamWin ? '??' : '??';
     switch (cat) {
       case 'Hase':
         msg = didMyTeamWin
-          ? 'GlÃ¼ckwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
+          ? 'Glückwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
           : 'Leider hat das andere Team diese Hase-Runde gewonnen.';
         break;
       case 'Kranich':
@@ -819,10 +818,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
           ? 'Ihr wart beim Elch am schnellsten und habt den Punkt geholt!'
           : 'Das andere Team war beim Elch schneller.';
         break;
-      case 'BÃ¤r':
+      case 'Bär':
         msg = didMyTeamWin
-          ? 'Sehr gut! Ihr habt die BÃ¤r-Runde gewonnen und den Punkt erhalten.'
-          : 'Das andere Team war bei BÃ¤r nÃ¤her dran.';
+          ? 'Sehr gut! Ihr habt die Bär-Runde gewonnen und den Punkt erhalten.'
+          : 'Das andere Team war bei Bär näher dran.';
         break;
       case 'Fuchs':
         msg = didMyTeamWin
@@ -911,7 +910,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
     });
   };
 
-  // â€”â€”â€”â€”â€” RENDER â€”â€”â€”â€”â€”
+  // ————— RENDER —————
   const [entered, setEntered] = useState(false);
   useEffect(()=>{ const id = requestAnimationFrame(()=> setEntered(true)); return ()=> cancelAnimationFrame(id); }, []);
   return (
@@ -953,7 +952,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 line = 'Lobby';
               } else if (p === 'CATEGORY') {
                 const r = Number(st?.roundIndex || 0) + 1;
-                line = `${catName || ''} Â· Runde ${r}/3`;
+                line = `${catName || ''} · Runde ${r}/3`;
               } else if (p === 'STAKE') {
                 line = catName || '';
               }
@@ -975,7 +974,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   src={`/categories/${k}.png`}
                   alt={`${st.currentCategory} icon`}
                   onError={(e) => {
-                    // PNG zuerst versuchen, dann auf SVG zurÃ¼ckfallen
+                    // PNG zuerst versuchen, dann auf SVG zurückfallen
                     if (!e.currentTarget.dataset.fallbackSvg) {
                       e.currentTarget.dataset.fallbackSvg = '1';
                       e.currentTarget.onerror = null;
@@ -1032,7 +1031,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {phase === 'STAKE' && (
           <section className={`card stake-section ${stakeSent ? 'sent' : ''}`}>
             <div className="stake-content">
-              <h3 className="stake-title">Einsatz wÃ¤hlen</h3>
+              <h3 className="stake-title">Einsatz wählen</h3>
               <div className="stake-grid">
                 <button
                   className={`btn stake-btn ${stake === 3 ? 'btn-primary selected' : ''}`}
@@ -1087,13 +1086,13 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                 </button>
                 <div className="muted stake-joker-hint" style={{ fontSize: '.95rem', fontWeight: 700, textAlign:'center' }}>
                   {quizJoker > 0
-                    ? (useJoker ? 'Jokerin aktiviert' : 'Jokerin verfÃ¼gbar â€“ tippe zum Aktivieren')
-                    : 'Keine Jokerin verfÃ¼gbar'}
+                    ? (useJoker ? 'Jokerin aktiviert' : 'Jokerin verfügbar – tippe zum Aktivieren')
+                    : 'Keine Jokerin verfügbar'}
                 </div>
               </div>
             )}
             <button className="btn btn-cta stake-submit" onClick={sendStake} disabled={inputLocked || stakeSent || !((coins === 0 ? stake === 0 : (stake === 3 || stake === 6 || stake === 9)))} style={{ marginTop: 16, width:'100%' }}>
-              {stakeSent ? 'Gesendet âœ“' : 'Einsatz senden'}
+              {stakeSent ? 'Gesendet ?' : 'Einsatz senden'}
             </button>            </div>
           </section>
         )}
@@ -1101,7 +1100,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Hase */}
     {phase === 'CATEGORY' && cat === 'Hase' && (
           <section className="card">
-      <h3>Hase â€“ Runde {Number(roundIndex) + 1}</h3>
+      <h3>Hase – Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1148,7 +1147,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Kranich */}
         {phase === 'CATEGORY' && cat === 'Kranich' && (
           <section className="card">
-            <h3>Kranich â€“ {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
+            <h3>Kranich – {(KRANICH_ROUNDS[roundIndex] || KRANICH_ROUNDS[0]).title}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1193,7 +1192,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   onTouchMove={onTouchMoveRow(i)}
                   onTouchEnd={onTouchEndRow}
                 >
-                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wÃ¤hlen / Reihenfolge anpassen</span>}</div>
+                  <div style={{ flex: 1, padding: '0 8px', fontWeight: 600 }}>{v || <span style={{ opacity:.4 }}>Element wählen / Reihenfolge anpassen</span>}</div>
                   <div className="row">
                     <button className="btn" disabled={i === 0} onClick={() => moveUp(i)}>
                       ?
@@ -1222,7 +1221,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Robbe */}
     {phase === 'CATEGORY' && cat === 'Robbe' && (
           <section className="card">
-      <h3>Robbe â€“ Runde {Number(roundIndex) + 1}</h3>
+      <h3>Robbe – Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1261,7 +1260,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Eule */}
     {phase === 'CATEGORY' && cat === 'Eule' && (
           <section className="card">
-      <h3>Eule â€“ Runde {Number(roundIndex) + 1}</h3>
+      <h3>Eule – Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1272,7 +1271,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             {roundIndex === 0 && (
               <>
                 <p className="muted" style={{ marginTop: -6 }}>
-                  Nenne so viele Animationsfilme wie mÃ¶glich (bis zu 15).
+                  Nenne so viele Animationsfilme wie möglich (bis zu 15).
                 </p>
                 <div className="grid3">
                   {euleRound1.map((v, i) => (
@@ -1373,7 +1372,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Wal */}
     {phase === 'CATEGORY' && cat === 'Wal' && (
           <section className="card">
-      <h3>Wal â€“ Runde {Number(roundIndex) + 1}</h3>
+      <h3>Wal – Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1399,7 +1398,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
           </section>
         )}
 
-        {/* â€”â€”â€” ELCH â€”â€”â€” */}
+        {/* ——— ELCH ——— */}
         {phase === 'CATEGORY' && cat === 'Elch' && (
           <>
     {/* Floating timer rendered via portal; only while running (hide on stop) */}
@@ -1425,7 +1424,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               document.body
             )}
             <section className="card" data-elch-panel style={{ position:'relative' }}>
-              <h3>Elch â€“ Runde {Number(roundIndex) + 1}</h3>
+              <h3>Elch – Runde {Number(roundIndex) + 1}</h3>
               {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
                 <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                   <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1434,7 +1433,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               )}
               {(st?.elch?.category || st?.elch?.exhausted) && (
                 <div className="muted" style={{ marginTop: -6, textAlign:'center', width:'100%', fontSize:'1rem', fontWeight:700 }}>
-                  {st?.elch?.category || 'â€” Pool erschÃ¶pft â€”'}
+                  {st?.elch?.category || '— Pool erschöpft —'}
                 </div>
               )}
               <div className="muted" style={{ marginTop: 12, textAlign:'center' }}>
@@ -1444,7 +1443,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                       ? 'Warten bis Sprache gezogen.' // Placeholder ohne "Admin" Wortlaut
                       : (() => {
                           const myBuzz = Array.isArray(st?.elch?.buzzOrder) && st.elch.buzzOrder.some(b => b.teamId === fixedId);
-                          if (myBuzz) return 'Du hast gebuzzert â€“ warte auf Entscheidung.';
+                          if (myBuzz) return 'Du hast gebuzzert – warte auf Entscheidung.';
                           if (st?.elch?.buzzLocked) return 'Ein anderes Team war schneller.';
                           return 'Buzz ist frei.';
                         })()
@@ -1459,15 +1458,15 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
               const myBuzz = Array.isArray(el?.buzzOrder) && el.buzzOrder.some(b => b.teamId === fixedId);
               const cls = `buzz-overlay ${locked ? 'buzz-locked' : 'buzz-free'}${myBuzz ? ' buzz-own' : ''}`;
               // Kompakte, kleingeschriebene Labels direkt unter dem Buzz-Icon
-              const label = !locked ? 'buzz' : (myBuzz ? 'dran' : 'zu spÃ¤t');
-              // Buzzer soll unabhÃ¤ngig vom allgemeinen Eingabe-Lock funktionieren
+              const label = !locked ? 'buzz' : (myBuzz ? 'dran' : 'zu spät');
+              // Buzzer soll unabhängig vom allgemeinen Eingabe-Lock funktionieren
               // (z. B. wenn in derselben Runde erneut eine Sprache gezogen wird)
               const canBuzz = !locked && !myBuzz;
               return (
                 <div
                   className={cls}
                   role="button"
-                  aria-label={canBuzz ? 'Buzz drÃ¼cken' : 'Buzz gesperrt'}
+                  aria-label={canBuzz ? 'Buzz drücken' : 'Buzz gesperrt'}
                   tabIndex={0}
                   onPointerDown={(e) => {
                     // Prefer immediate pointer reaction on mobile
@@ -1480,7 +1479,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                     }
                   }}
                   onTouchStart={(e) => {
-                    // iOS/Safari fallback â€“ ensure touch triggers buzz
+                    // iOS/Safari fallback – ensure touch triggers buzz
                     if (canBuzz && !buzzLockRef.current) {
                       buzzLockRef.current = true;
                       try { e.preventDefault(); e.stopPropagation(); } catch {}
@@ -1492,7 +1491,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                   onClick={() => {
                     if (canBuzz && !buzzLockRef.current) {
                       buzzLockRef.current = true;
-                      // Vibrationsfeedback (falls unterstÃ¼tzt)
+                      // Vibrationsfeedback (falls unterstützt)
                       try { navigator.vibrate && navigator.vibrate([15, 40, 25]); } catch {}
                       socket.emit('team:elch:buzz');
                       setTimeout(()=>{ buzzLockRef.current = false; }, 600);
@@ -1540,10 +1539,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
           </>
         )}
 
-        {/* BÃ¤r */}
-  {phase === 'CATEGORY' && cat === 'BÃ¤r' && (
+        {/* Bär */}
+  {phase === 'CATEGORY' && cat === 'Bär' && (
           <section className="card">
-            <h3>BÃ¤r â€“ Runde {Number(roundIndex) + 1}</h3>
+            <h3>Bär – Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1554,21 +1553,21 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
             {/* Runden-Hinweis */}
             {roundIndex === 0 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                SchÃ¤tze die Flugdauer in <b>Stunden (Dezimal)</b>.
+                Schätze die Flugdauer in <b>Stunden (Dezimal)</b>.
               </p>
             )}
             {roundIndex === 1 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                SchÃ¤tze die Anzahl Kitas in Deutschland.
+                Schätze die Anzahl Kitas in Deutschland.
               </p>
             )}
             {roundIndex === 2 && (
               <p className="muted" style={{ marginTop: -6 }}>
-                SchÃ¤tze die HÃ¶he des hÃ¶chsten Wolkenkratzers in <b>Metern</b>.
+                Schätze die Höhe des höchsten Wolkenkratzers in <b>Metern</b>.
               </p>
             )}
 
-            <label className="label">Deine SchÃ¤tzung</label>
+            <label className="label">Deine Schätzung</label>
             <input
               className="input"
               inputMode={roundIndex === 0 ? 'decimal' : 'numeric'}
@@ -1594,7 +1593,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         {/* Fuchs */}
     {phase === 'CATEGORY' && cat === 'Fuchs' && (
           <section className="card">
-      <h3>Fuchs â€“ Runde {Number(roundIndex) + 1}</h3>
+      <h3>Fuchs – Runde {Number(roundIndex) + 1}</h3>
             {(endsAt && endsAt > now && !pausedAt && pausedRemaining===0) && (
               <div className={`timer active ${remainingSec<=10 ? 'low' : ''}`}>
                 <div className="timer-bar" style={{ transform: `scaleX(${Math.max(0, Math.min(1, progress))})` }} />
@@ -1618,7 +1617,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         <div className={`conn-banner ${isConnected ? '' : 'down'}`} role="status" aria-live="polite">
           <div className="conn-banner__dot" aria-hidden />
           <div className="conn-banner__text">
-            {isReconnecting ? 'Verbindung wird wiederhergestelltâ€¦' : (!isConnected ? 'Getrennt. Versuche neu zu verbindenâ€¦' : (connError ? `Fehler: ${connError}` : ''))}
+            {isReconnecting ? 'Verbindung wird wiederhergestellt…' : (!isConnected ? 'Getrennt. Versuche neu zu verbinden…' : (connError ? `Fehler: ${connError}` : ''))}
           </div>
           <button className="btn" onClick={() => socket.connect()} disabled={isReconnecting}>
             Neu verbinden
@@ -1731,7 +1730,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                       position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
                       fontSize:'0.8rem', fontWeight:700, letterSpacing:'.05em', color:'#d0dae8', opacity:.55
                     }} aria-hidden>
-                      LÃ¤dtâ€¦
+                      Lädt…
                     </div>
                   )}
                   {factImgStatus[imgSrc] === false && (
@@ -1781,13 +1780,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         );
       })()}
 
-  {/* Kurze Pause Footer (fixiert unten in Lobby) */}
-  <LobbyPauseFooter
-    phase={phase}
-    teamName={teamDisplayName}
-    categoryName={cat}
-    roundIndex={Number.isFinite(roundIndex) ? roundIndex : undefined}
-  />
+
 
   {categorySummary && (()=>{
         const k = catKey(categorySummary.category);
@@ -1803,7 +1796,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
                     onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; }}} />
                 </div>
                 <h2 className="category-summary__title">{categorySummary.category}</h2>
-                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} Â· Runden: {categorySummary.roundsPlayed}</div>
+                <div className="category-summary__meta">Pot: <span className="icon coin coin-sm" aria-hidden />{categorySummary.pot} · Runden: {categorySummary.roundsPlayed}</div>
               </div>
               <ul className="category-summary__list">
                 {earnEntries.map(([tid,coinsEarned],idx)=>{
@@ -1832,7 +1825,7 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       {phase === 'CATEGORY' && cat === 'Elch' && st?.elch?.category && (
         <>
           <ElchSlotDraw key={st.elch.category} text={st.elch.category} />
-          {/* ARIA-Live-Region fÃ¼r Screenreader: sagt gezogene Sprache an */}
+          {/* ARIA-Live-Region für Screenreader: sagt gezogene Sprache an */}
           <div style={{position:'absolute',left:'-9999px',height:'1px',width:'1px',overflow:'hidden'}} aria-live="polite" aria-atomic="true">
             {st.elch.category}
           </div>
@@ -1959,12 +1952,12 @@ function CategoryIntro({ k, name }){
     const map = {
       hase: 'Schau mir in die Augen',
       kranich: 'Ordnung muss sein',
-      robbe: 'Ich weiÃŸ was, was du nicht weiÃŸt',
+      robbe: 'Ich weiß was, was du nicht weißt',
       eule: 'Augen auf bei der Filmwahl',
       fuchs: 'Very Important Silhouette',
       wal: 'Einer geht noch!',
-      elch: 'Buchstabierâ€™ das Ereignis mir',
-      baer: 'SchÃ¤tzâ€™ me if you can',
+      elch: 'Buchstabier’ das Ereignis mir',
+      baer: 'Schätz’ me if you can',
     };
     return map[k] || (name || '');
   })();
@@ -2004,47 +1997,6 @@ function CategoryIntro({ k, name }){
         {LINE && <div ref={textRef} className="cat-intro-text below-bg">{LINE}</div>}
       </div>
     </div>
-  );
-}
-
-// Status-Footer: Lobby zeigt "Kurze Pause", Runden zeigen Team & Fortschritt
-// Wird ausserhalb des main-Content gerendert, damit Overlays nicht verschoben werden.
-// Nutzt weiterhin die bestehende Lobby-Animation, ergaenzt um eine schmale Statusleiste.
-export function LobbyPauseFooter({ phase, teamName, categoryName, roundIndex }) {
-  const isLobby = phase === 'LOBBY';
-  const isRoundActive = phase === 'CATEGORY' || phase === 'STAKE';
-  if (!isLobby && !isRoundActive) return null;
-
-  if (isLobby) {
-    const text = '... kurze Pause ...';
-    const chars = text.split('');
-    return (
-      <footer className="pause-footer mode-lobby" aria-label="Kurze Pause" role="contentinfo">
-        <h3 className="lobby-title" aria-hidden>
-          {chars.map((ch, i) => (
-            ch === ' '
-              ? <span className="k-space" aria-hidden key={`s-${i}`}>&nbsp;</span>
-              : <span className="k-letter" style={{ '--i': i }} key={i}>{ch}</span>
-          ))}
-        </h3>
-      </footer>
-    );
-  }
-
-  const safeTeamName = (teamName || '').toString().trim() || 'Team';
-  const resolvedRoundIndex = Number.isFinite(roundIndex) ? roundIndex : null;
-  const roundNumber = resolvedRoundIndex !== null ? resolvedRoundIndex + 1 : null;
-  const labelCategory = (categoryName || '').toString().trim() || 'Kategorie';
-  const statusParts = [labelCategory];
-  if (roundNumber !== null) statusParts.push(`Runde ${roundNumber}`);
-  const statusText = statusParts.join(' \u00b7 ');
-
-  return (
-    <footer className="pause-footer mode-game" aria-label="Rundenstatus" role="contentinfo">
-      <span className="footer-team" aria-label="Teamname">{safeTeamName}</span>
-      <span className="footer-divider" aria-hidden />
-      <span className="footer-status">{statusText}</span>
-    </footer>
   );
 }
 
