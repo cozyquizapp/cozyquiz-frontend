@@ -1,16 +1,18 @@
-import { io } from "socket.io-client";
+﻿import { io } from "socket.io-client";
 
 // Marker to help confirm this file is served
 console.warn('[socket-v2] loaded');
 
 let TUNNEL = import.meta.env.VITE_SOCKET_URL?.trim();
 
+const DEFAULT_SOCKET_PORT = Number(import.meta.env.VITE_SOCKET_PORT || 3001);
+
 function isLocal(h){
   try { h = String(h||''); } catch { h = ''; }
   return h === 'localhost' || h.startsWith('127.') || h.startsWith('192.168.') || h.endsWith('.local');
 }
 
-// Legacy heuristic removed – we accept almost any provided absolute URL.
+// Legacy heuristic removed â€“ we accept almost any provided absolute URL.
 function looksLikeBackend(){ return true; }
 
 function isTryCloudflare(urlStr){
@@ -19,6 +21,22 @@ function isTryCloudflare(urlStr){
 
 function sameOrigin(urlStr){
   try{ const u = new URL(urlStr, location.origin); return u.origin === location.origin; }catch{ return false; }
+}
+function localBackendUrl(){
+  try {
+    if (typeof window === 'undefined') throw new Error('no window');
+    const { protocol, hostname } = window.location || {};
+    const base = protocol === 'https:' ? 'https:' : 'http:';
+    const targetHost = hostname && hostname !== '' ? hostname : 'localhost';
+    const url = new URL(`${base}//${targetHost}`);
+    url.port = String(DEFAULT_SOCKET_PORT);
+    url.pathname = '';
+    url.search = '';
+    url.hash = '';
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return `http://127.0.0.1:${DEFAULT_SOCKET_PORT}`;
+  }
 }
 
 let API;
@@ -34,10 +52,10 @@ if (TUNNEL) {
 
 if (TUNNEL) {
   API = TUNNEL;
-} else if (isLocal(location.hostname)) {
-  API = 'http://localhost:3001';
+} else if (typeof window !== 'undefined' && window.location && isLocal(window.location.hostname)) {
+  API = localBackendUrl();
 } else {
-  console.warn('[socket-v2] VITE_SOCKET_URL missing/ignored – falling back to https://api.cozyquiz.app');
+  console.warn('[socket-v2] VITE_SOCKET_URL missing/ignored â€“ falling back to https://api.cozyquiz.app');
   API = 'https://api.cozyquiz.app';
 }
 
@@ -104,3 +122,11 @@ export function connectWithTeamId(teamId) {
   if(s){ s.auth = { teamId }; try{ s.connect(); }catch(e){} }
   return s || socket;
 }
+
+
+
+
+
+
+
+

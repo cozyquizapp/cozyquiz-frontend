@@ -148,6 +148,7 @@ function AdminView() {
   const [lightMode, setLightMode] = useState(()=>{
     try { return localStorage.getItem('admin.lightMode') === '1'; } catch { return false; }
   });
+  const [selectedWinnerIds, setSelectedWinnerIds] = useState([]);
   // mini-status-bar entfernt
 
   // Scoreboard v2 controls
@@ -255,8 +256,24 @@ function AdminView() {
   const finishCategory = () => socket.emit('admin:category:finish');
   // Team update -> backend expects: 'admin:team:update' with { id, coins?, quizJoker?, name?, avatar? }
   const patchTeam = (teamId, field, value) => socket.emit('admin:team:update', { id: teamId, [field]: value });
-  // Resolve winner -> backend expects: 'admin:round:resolve' with { winnerId }
-  const resolveFor = (teamIdOrNull) => socket.emit('admin:round:resolve', { winnerId: teamIdOrNull });
+  const roundResolved = !!st?.roundResolved;
+  // Resolve winner -> backend expects: 'admin:round:resolve' with { winnerId } (legacy) or { winnerIds } (array)
+  const resolveFor = (teamIdOrNull) => {
+    if (roundResolved) return;
+    socket.emit('admin:round:resolve', { winnerId: teamIdOrNull });
+    setSelectedWinnerIds([]);
+  };
+  const toggleWinnerSelection = (teamId) => {
+    setSelectedWinnerIds((prev) => {
+      if (prev.includes(teamId)) return prev.filter((id) => id !== teamId);
+      return [...prev, teamId];
+    });
+  };
+  const distributePot = () => {
+    if (roundResolved || selectedWinnerIds.length === 0) return;
+    socket.emit('admin:round:resolve', { winnerIds: selectedWinnerIds });
+    setSelectedWinnerIds([]);
+  };
   const liveCP = useMemo(()=> Math.max(0, Number(st?.categoryPot||0)), [st?.categoryPot]);
 
   // connect
@@ -287,6 +304,14 @@ function AdminView() {
   const A = active[0];
   const B = active[1];
   const C = active[2];
+  useEffect(() => {
+    setSelectedWinnerIds([]);
+  }, [st?.roundIndex, st?.currentCategory]);
+  useEffect(() => {
+    if (!roundResolved) return;
+    setSelectedWinnerIds([]);
+  }, [roundResolved]);
+
   // ---- Submissions je Team ----
   const subA = A ? st?.submissions?.[A.id] : null;
   const subB = B ? st?.submissions?.[B.id] : null;
@@ -756,61 +781,49 @@ function AdminView() {
   {/* ELCH – Admin-Panel (erst nach Einsätze sperren, also in CATEGORY) */}
   {st?.currentCategory === 'Elch' && phase === 'CATEGORY' && (
           <div className="card" style={{ marginTop: 10, borderColor: '#3fa1ff55' }}>
-            <h4>🦌 Elch – Kategoriesprache & Buzz</h4>
-
-            <div className="row wrap" style={{ gap: 8 }}>
-              <button
-                className="btn btn-primary"
-                onClick={() => socket.emit('admin:elch:draw')}
-                disabled={!!st?.elch?.exhausted}
-              >
-                🎲 Sprache ziehen
-              </button>
-            </div>
-
-            <div style={{ marginTop: 10 }}>
-              <div className="muted">
-                Kategoriesprache:&nbsp;
-                <b>
-                  {st?.elch?.category
-                    ? st.elch.category
-                    : (st?.elch?.exhausted ? '— Pool erschöpft —' : '— (ziehen) —')}
-                </b>
-              </div>
-              {false && (
-                <div className="muted" style={{ marginTop: 4 }}>
-                  Status:&nbsp;{st?.elch?.buzzLocked ? '🔒 Buzz gesperrt' : '🔓 Buzz frei'}
+            <h4>🏆 Sieger wählen</h4>
+          {roundResolved && (
+            <div className="muted">Runde bereits gewertet</div>
+          )}
+          <div className="row wrap" style={{ gap: 12 }}>
+            {(active || []).slice(0,5).map(t => {
+              const checked = selectedWinnerIds.includes(t.id);
+              return (
+                <div key={t.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '.85rem' }}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      disabled={roundResolved}
+                      onChange={() => toggleWinnerSelection(t.id)}
+                    />
+                    nimmt am Pot teil?
+                  </label>
+                  <button className="btn btn-primary" disabled={roundResolved} onClick={() => resolveFor(t.id)}>
+                    Sieger: {t.name}
+                  </button>
                 </div>
-              )}
-              {Array.isArray(st?.elch?.used) && st.elch.used.length > 0 && (
-                <div className="muted" style={{ marginTop: 4 }}>
-                  Bereits gezogen:&nbsp;{st.elch.used.join(', ')}
-                </div>
-              )}
-            </div>
-
-            <div style={{ marginTop: 10 }}>
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>Buzz-Reihenfolge</div>
-              {Array.isArray(st?.elch?.buzzOrder) && st.elch.buzzOrder.length > 0 ? (
-                <ol style={{ margin: 0, paddingLeft: 20 }}>
-                  {st.elch.buzzOrder.map((entry, idx) => {
-                    const team = (teams || []).find(t => t.id === entry.teamId);
-                    const name = team?.name || entry.teamId?.slice?.(0, 6) || 'Team';
-                    const ts = entry.ts ? new Date(entry.ts).toLocaleTimeString() : '—';
-                    return (
-                      <li key={idx} style={{ marginBottom: 4 }}>
-                        <b>{name}</b> <span className="muted">({ts})</span>
-                      </li>
-                    );
-                  })}
-                </ol>
-              ) : (
-                <i className="muted">Noch kein Buzz.</i>
-              )}
-            </div>
+              );
+            })}
           </div>
-        )}
-      </section>{/* /admin-controls */}
+          <div className="row wrap" style={{ gap: 12, marginTop: 12 }}>
+            <button className="btn btn-success" disabled={roundResolved || selectedWinnerIds.length === 0} onClick={distributePot}>
+              Pot verteilen
+            </button>
+            <button className="btn" disabled={roundResolved} onClick={() => resolveFor(null)}>
+              Keiner
+            </button>
+          </div>
+          <div className="muted" style={{ marginTop: 6 }}>
+            Payout/Runde: <b>{Math.floor((st?.categoryPot || 0) / 3)}</b> - Carry: <b>{st?.carryRound || 0}</b>
+          </div>
+          <div className="muted" style={{ fontSize: '.8rem' }}>
+            Ohne Auswahl bleibt der Einzel-Sieger-Button aktiv.
+          </div>
+        </div>
+      )}
+    </section>
+      {/* /admin-controls */}
 
       {/* Stakes */}
       {phase === 'STAKE' && (
@@ -1035,13 +1048,44 @@ function AdminView() {
   {phase === 'CATEGORY' && (
         <section className="card admin-decide full-span">
           <h4>🏆 Sieger wählen</h4>
-          <div className="row wrap">
-            {(active || []).slice(0,5).map(t => (
-              <button key={t.id} className="btn btn-primary" onClick={() => resolveFor(t.id)}>Sieger: {t.name}</button>
-            ))}
-            <button className="btn" onClick={() => resolveFor(null)}>Keiner</button>
+          {roundResolved && (
+            <div className="muted">Runde bereits gewertet</div>
+          )}
+          <div className="row wrap" style={{ gap: 12 }}>
+            {(active || []).slice(0,5).map(t => {
+              const checked = selectedWinnerIds.includes(t.id);
+              return (
+                <div key={t.id} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '.85rem' }}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      disabled={roundResolved}
+                      onChange={() => toggleWinnerSelection(t.id)}
+                    />
+                    nimmt am Pot teil?
+                  </label>
+                  <button className="btn btn-primary" disabled={roundResolved} onClick={() => resolveFor(t.id)}>
+                    Sieger: {t.name}
+                  </button>
+                </div>
+              );
+            })}
           </div>
-          <div className="muted">Payout/Runde: <b>{Math.floor((st?.categoryPot || 0) / 3)}</b> · Carry: <b>{st?.carryRound || 0}</b></div>
+          <div className="row wrap" style={{ gap: 12, marginTop: 12 }}>
+            <button className="btn btn-success" disabled={roundResolved || selectedWinnerIds.length === 0} onClick={distributePot}>
+              Pot verteilen
+            </button>
+            <button className="btn" disabled={roundResolved} onClick={() => resolveFor(null)}>
+              Keiner
+            </button>
+          </div>
+          <div className="muted" style={{ marginTop: 6 }}>
+            Payout/Runde: <b>{Math.floor((st?.categoryPot || 0) / 3)}</b> - Carry: <b>{st?.carryRound || 0}</b>
+          </div>
+          <div className="muted" style={{ fontSize: '.8rem' }}>
+            Ohne Auswahl bleibt der Einzel-Sieger-Button aktiv.
+          </div>
         </section>
       )}
 
@@ -1203,3 +1247,8 @@ function AdminView() {
 }
 
 export default AdminView;
+
+
+
+
+
