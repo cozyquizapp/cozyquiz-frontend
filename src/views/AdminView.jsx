@@ -797,7 +797,7 @@ function AdminView() {
                       disabled={roundResolved}
                       onChange={() => toggleWinnerSelection(t.id)}
                     />
-                    nimmt am Pot teil?
+                    nimmt am Unentschieden teil?
                   </label>
                   <button className="btn btn-primary" disabled={roundResolved} onClick={() => resolveFor(t.id)}>
                     Sieger: {t.name}
@@ -1063,7 +1063,7 @@ function AdminView() {
                       disabled={roundResolved}
                       onChange={() => toggleWinnerSelection(t.id)}
                     />
-                    nimmt am Pot teil?
+                    nimmt am Unentschieden teil?
                   </label>
                   <button className="btn btn-primary" disabled={roundResolved} onClick={() => resolveFor(t.id)}>
                     Sieger: {t.name}

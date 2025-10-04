@@ -1,15 +1,15 @@
-﻿// Zentrale Sammlung der Quiz-LÃ¶sungen & Runden-Definitionen
-// Aus AdminView.jsx extrahiert, damit die View schlanker wird und LÃ¶sungen ggf. leichter
-// ersetzt / variiert werden kÃ¶nnen.
+﻿// Zentrale Sammlung der Quiz-Lösungen & Runden-Definitionen
+// Aus AdminView.jsx extrahiert, damit die View schlanker wird und Lösungen ggf. leichter
+// ersetzt / variiert werden können.
 
-// Hase â€“ LÃ¶sungen (3 Runden)
+// Hase – Lösungen (3 Runden)
 export const HASE_SOLUTIONS = [
-  ['Marilyn Monroe', 'Barack Obama', 'Angela Merkel', 'Joachim LÃ¶w'],
+  ['Marilyn Monroe', 'Barack Obama', 'Angela Merkel', 'Joachim Löw'],
   ['Jackie Chan', 'Helene Fischer', 'Pedro Pascal', 'Lily Collins'],
   ['Rihanna', 'Albert Einstein', 'Walentina Doronina', 'Bill Kaulitz'],
 ];
 
-// Kranich â€“ 3 Runden (mit LÃ¶sungen)
+// Kranich – 3 Runden (mit Lösungen)
 export const KRANICH_ROUNDS = [
   {
     title: 'Filmreihen',
@@ -27,7 +27,7 @@ export const KRANICH_ROUNDS = [
   {
     title: 'Social Media',
     categories: [
-      { id: 'gruendung', label: 'GrÃ¼ndungsjahr' },
+      { id: 'gruendung', label: 'Gründungsjahr' },
       { id: 'posts', label: 'Posts pro Minute' },
       { id: 'maus', label: 'Monatlich aktive Nutzer' },
     ],
@@ -41,7 +41,7 @@ export const KRANICH_ROUNDS = [
     title: 'Popstars',
     categories: [
       { id: 'geburtsjahr', label: 'Geburtsjahr' },
-      { id: 'song', label: 'MeistgehÃ¶rter Song (Spotify)' },
+      { id: 'song', label: 'Meistgehörter Song (Spotify)' },
       { id: 'ig', label: 'Instagram-Follower' },
     ],
     solutions: {
@@ -52,28 +52,28 @@ export const KRANICH_ROUNDS = [
   },
 ];
 
-// Robbe â€“ richtige Option je Runde
+// Robbe – richtige Option je Runde
 export const ROBBE_CORRECT = ['c', 'c', 'a'];
 
-// Robbe â€“ Detailrunden (Find the Fake). Jede Runde: drei Aussagen (a,b,c) + welche unwahr ist.
+// Robbe – Detailrunden (Find the Fake). Jede Runde: drei Aussagen (a,b,c) + welche unwahr ist.
 // truth: true = wahr, false = unwahr (Fake). 'correct' markiert den Buchstaben der unwahren Aussage.
 export const ROBBE_ROUNDS = [
   {
     options: {
       a: {
-        text: 'Ã„pfel gehÃ¶ren zur Familie der RosengewÃ¤chse',
+        text: 'Äpfel gehören zur Familie der Rosengewächse',
         truth: true,
-        explanation: 'Der Apfelbaum (Malus domestica) gehÃ¶rt zur Familie Rosaceae â€“ wie Birnen, Kirschen, Pflaumen.'
+        explanation: 'Der Apfelbaum (Malus domestica) gehört zur Familie Rosaceae – wie Birnen, Kirschen, Pflaumen.'
       },
       b: {
         text: 'Die Perlen im Bubble Tea werden aus Wurzeln gewonnen',
         truth: true,
-        explanation: 'Tapioka-Perlen bestehen aus TapiokastÃ¤rke; diese stammt aus der Maniokwurzel.'
+        explanation: 'Tapioka-Perlen bestehen aus Tapiokastärke; diese stammt aus der Maniokwurzel.'
       },
       c: {
-        text: 'Kamele speichern Wasser in ihren HÃ¶ckern',
+        text: 'Kamele speichern Wasser in ihren Höckern',
         truth: false,
-        explanation: 'HÃ¶cker bestehen aus Fettgewebe (Energiereserve); Wasser wird nicht im HÃ¶cker gespeichert.'
+        explanation: 'Höcker bestehen aus Fettgewebe (Energiereserve); Wasser wird nicht im Höcker gespeichert.'
       }
     },
     correct: 'c'
@@ -83,17 +83,17 @@ export const ROBBE_ROUNDS = [
       a: {
         text: 'Hummeln sind auch Bienen',
         truth: true,
-        explanation: 'Hummeln gehÃ¶ren zur Familie der Echten Bienen (Apidae) â€“ Gattung Bombus.'
+        explanation: 'Hummeln gehören zur Familie der Echten Bienen (Apidae) – Gattung Bombus.'
       },
       b: {
         text: 'Auberginen enthalten Nikotin',
         truth: true,
-        explanation: 'NachtschattengewÃ¤chse enthalten Spuren Nikotin â€“ Mengen sind jedoch verschwindend gering.'
+        explanation: 'Nachtschattengewächse enthalten Spuren Nikotin – Mengen sind jedoch verschwindend gering.'
       },
       c: {
         text: 'Der Mount Everest schrumpft',
         truth: false,
-        explanation: 'Im Mittel wÃ¤chst der Everest einige mm pro Jahr; Beben kÃ¶nnen kurzfristig beeinflussen.'
+        explanation: 'Im Mittel wächst der Everest einige mm pro Jahr; Beben können kurzfristig beeinflussen.'
       }
     },
     correct: 'c'
@@ -101,9 +101,9 @@ export const ROBBE_ROUNDS = [
   {
     options: {
       a: {
-        text: 'Die Sahara ist die grÃ¶ÃŸte WÃ¼ste der Erde',
+        text: 'Die Sahara ist die größte Wüste der Erde',
         truth: false,
-        explanation: 'GrÃ¶ÃŸte WÃ¼ste insgesamt ist die Antarktis (dann Arktis); Sahara ist grÃ¶ÃŸte heiÃŸe WÃ¼ste.'
+        explanation: 'Größte Wüste insgesamt ist die Antarktis (dann Arktis); Sahara ist größte heiße Wüste.'
       },
       b: {
         text: 'Volvic ist nach einem Ort in Frankreich benannt',
@@ -111,19 +111,19 @@ export const ROBBE_ROUNDS = [
         explanation: 'Volvic stammt aus dem gleichnamigen Ort in der Auvergne.'
       },
       c: {
-        text: 'Spinnen kÃ¶nnen fliegen',
+        text: 'Spinnen können fliegen',
         truth: true,
-        explanation: 'Ballooning: Spinnen lassen FÃ¤den vom Wind tragen und â€žsegelnâ€œ durch die Luft.'
+        explanation: 'Ballooning: Spinnen lassen Fäden vom Wind tragen und „segeln“ durch die Luft.'
       }
     },
     correct: 'a'
   }
 ];
 
-// Eule â€“ LÃ¶sungen (Mapping: roundIdx 0â†’r1, 1â†’r3, 2â†’r4)
+// Eule – Lösungen (Mapping: roundIdx 0→r1, 1→r3, 2→r4)
 export const EULE_SOLUTIONS = {
   r1: [
-    'Die EiskÃ¶nigin', 'Lilo & Stitch', 'Soul', 'Drachen zÃ¤hmen leicht gemacht', 'Oben',
+    'Die Eiskönigin', 'Lilo & Stitch', 'Soul', 'Drachen zähmen leicht gemacht', 'Oben',
     'Ice Age', 'Monster AG', 'Minions', 'Alles steht Kopf', 'Findet Dorie',
     'Kung Fu Panda', 'Toy Story', 'Wall-E', 'Madagaskar', 'Ratatouille'
   ],
@@ -131,28 +131,28 @@ export const EULE_SOLUTIONS = {
   r4: ['Ansteckrose', 'Tiger', 'Ohren', 'Latzhosen'],
 };
 
-// Fuchs â€“ richtige Antworten (3-Runden-Mapping: 0â†’R1, 1â†’R2, 2â†’R4)
+// Fuchs – richtige Antworten (3-Runden-Mapping: 0→R1, 1→R2, 2→R4)
 export const FUCHS_SOLUTIONS = ['Justin Bieber', 'Rihanna', 'Heidi Klum'];
 
-// BÃ¤r â€“ Fragen + richtige Werte (pro Runde)
+// Bär – Fragen + richtige Werte (pro Runde)
 export const BAER_ROUNDS = [
   {
-    title: 'LÃ¤ngster Nonstop-Passagierflug der Welt',
-    question: 'Wie viele Stunden dauert der aktuell lÃ¤ngste Nonstop-Passagierflug der Welt?',
+    title: 'Längster Nonstop-Passagierflug der Welt',
+    question: 'Wie viele Stunden dauert der aktuell längste Nonstop-Passagierflug der Welt?',
     solution: 18 + 50 / 60, // 18 h 50 min
     unit: 'h',
-    solutionLabel: 'â‰ˆ 18,8 h (18 h 50 min Â· Singapore Airlines Â· SINâ€“JFK)',
+    solutionLabel: '≈ 18,8 h (18 h 50 min · Singapore Airlines · SIN–JFK)',
   },
   {
-    title: 'Anzahl KindertagesstÃ¤tten in Deutschland',
-    question: 'Wie viele KindertagesstÃ¤tten (Kitas) gibt es in Deutschland?',
+    title: 'Anzahl Kindertagesstätten in Deutschland',
+    question: 'Wie viele Kindertagesstätten (Kitas) gibt es in Deutschland?',
     solution: 58500,
     unit: '',
-    solutionLabel: 'â‰ˆ 58 500 (Stand 2023)',
+    solutionLabel: '≈ 58 500 (Stand 2023)',
   },
   {
-    title: 'HÃ¶chster Wolkenkratzer der Welt',
-    question: 'Wie hoch ist der aktuell hÃ¶chste Wolkenkratzer der Welt?',
+    title: 'Höchster Wolkenkratzer der Welt',
+    question: 'Wie hoch ist der aktuell höchste Wolkenkratzer der Welt?',
     solution: 828,
     unit: 'm',
     solutionLabel: '828 m (Burj Khalifa, Dubai)',

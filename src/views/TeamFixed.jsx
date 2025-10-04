@@ -49,6 +49,15 @@ function Avatar({ src, size = 64, className = '' }) {
   }
   return <span style={{ fontSize: size * 0.8 }}>{finalSrc || '?'}</span>;
 }
+function formatTeamNames(list) {
+  if (!Array.isArray(list) || list.length === 0) return '';
+  if (list.length === 1) return list[0];
+  if (list.length === 2) return list[0] + ' & ' + list[1];
+  const head = list.slice(0, -1).join(', ');
+  return head + ' & ' + list[list.length - 1];
+}
+
+
 
 /** KRANICH: 3 Runden (duell) */
 const KRANICH_ROUNDS = [
@@ -249,8 +258,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   // Overlay for round result feedback (win/lose)
   const [showLoseOverlay, setShowLoseOverlay] = useState(false);
   const [showWinOverlay, setShowWinOverlay] = useState(false);
+  const [showTieOverlay, setShowTieOverlay] = useState(false);
   const hideLoseTmo = useRef(null);
   const hideWinTmo = useRef(null);
+  const hideTieTmo = useRef(null);
 
   // Category intro overlay (smooth avatar pop when a new category begins)
   const [catIntro, setCatIntro] = useState(null); // { k: catKey, ts }
@@ -510,8 +521,10 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
       setLastResult(null);
       setShowLoseOverlay(false);
       setShowWinOverlay(false);
+      setShowTieOverlay(false);
       if (hideLoseTmo.current) { clearTimeout(hideLoseTmo.current); hideLoseTmo.current = null; }
       if (hideWinTmo.current) { clearTimeout(hideWinTmo.current); hideWinTmo.current = null; }
+      if (hideTieTmo.current) { clearTimeout(hideTieTmo.current); hideTieTmo.current = null; }
     }
   }, [cat, roundIndex]);
 
@@ -770,83 +783,163 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
   }
 
   // Hilfsfunktion: Hat mein Team die Runde gewonnen?
-  const didMyTeamWin = (() => {
-    const res = getCurrentResult();
-    if (!res) return null;
-    if ('winnerId' in res) {
-      if (res.winnerId === fixedId) return true;
-      if (res.winnerId) return false;
+  const currentResult = getCurrentResult();
+  const winnerIds = Array.isArray(currentResult?.winnerIds)
+    ? currentResult.winnerIds.filter((id) => id !== null && id !== undefined).map((id) => String(id))
+    : [];
+  const myTeamId = fixedId ? String(fixedId) : null;
+  const resolvedWinnerId = currentResult?.winnerId != null
+    ? String(currentResult.winnerId)
+    : (winnerIds.length === 1 ? winnerIds[0] : null);
+
+  const resultOutcome = (() => {
+    if (!currentResult) return null;
+    if (winnerIds.length > 1) {
+      return myTeamId && winnerIds.includes(myTeamId) ? 'tie-win' : 'tie-lose';
     }
-    // Fallback: falls Struktur anders, ggf. anpassen
+    if (resolvedWinnerId) {
+      return myTeamId && resolvedWinnerId === myTeamId ? 'win' : 'lose';
+    }
+    if (currentResult?.winnerId === null || winnerIds.length === 0) {
+      return 'carry';
+    }
     return null;
   })();
 
-  // Rückmeldungstexte für jede Kategorie
+  const teamNameById = useMemo(() => {
+    const map = new Map();
+    teams.forEach((team) => {
+      if (!team) return;
+      const id = String(team.id);
+      map.set(id, team.name || ('Team ' + id));
+    });
+    return map;
+  }, [teams]);
+
   const resultFeedback = useMemo(() => {
-    // Zeige Feedback, sobald ein Gewinner existiert (unabhängig von phase)
-    if (didMyTeamWin == null) return null;
-    let msg = '';
-    let emoji = didMyTeamWin ? '??' : '??';
-    switch (cat) {
-      case 'Hase':
-        msg = didMyTeamWin
-          ? 'Glückwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
-          : 'Leider hat das andere Team diese Hase-Runde gewonnen.';
-        break;
-      case 'Kranich':
-        msg = didMyTeamWin
-          ? 'Super! Ihr habt die Kranich-Runde gewonnen und den Punkt erhalten.'
-          : 'Schade, das andere Team war bei Kranich besser.';
-        break;
-      case 'Robbe':
-        msg = didMyTeamWin
-          ? 'Stark! Ihr habt die Robbe-Runde gewonnen und den Punkt geholt.'
-          : 'Leider hat das andere Team die Robbe-Runde gewonnen.';
-        break;
-      case 'Eule':
-        msg = didMyTeamWin
-          ? 'Klasse! Ihr habt die Eule-Runde gewonnen und den Punkt erhalten.'
-          : 'Das andere Team war bei Eule erfolgreicher.';
-        break;
-      case 'Wal':
-        msg = didMyTeamWin
-          ? 'Ihr habt die Wal-Runde gewonnen und den Punkt geholt!'
-          : 'Das andere Team hat die Wal-Runde gewonnen.';
-        break;
-      case 'Elch':
-        msg = didMyTeamWin
-          ? 'Ihr wart beim Elch am schnellsten und habt den Punkt geholt!'
-          : 'Das andere Team war beim Elch schneller.';
-        break;
-      case 'Bär':
-        msg = didMyTeamWin
-          ? 'Sehr gut! Ihr habt die Bär-Runde gewonnen und den Punkt erhalten.'
-          : 'Das andere Team war bei Bär näher dran.';
-        break;
-      case 'Fuchs':
-        msg = didMyTeamWin
-          ? 'Ihr habt die Fuchs-Runde gewonnen und den Punkt geholt!'
-          : 'Das andere Team hat bei Fuchs besser.';
-        break;
-      default:
-        msg = didMyTeamWin
-          ? 'Ihr habt diese Runde gewonnen!'
-          : 'Leider hat das andere Team diese Runde gewonnen.';
+    if (!resultOutcome) return null;
+
+    const tone = (() => {
+      if (resultOutcome === 'win') return 'win';
+      if (resultOutcome === 'lose') return 'lose';
+      if (resultOutcome === 'carry') return 'neutral';
+      return 'tie';
+    })();
+
+    const categoryMessage = (isWin) => {
+      switch (cat) {
+        case 'Hase':
+          return isWin
+            ? 'Glückwunsch! Ihr habt diese Hase-Runde gewonnen und den Punkt geholt.'
+            : 'Leider hat das andere Team diese Hase-Runde gewonnen.';
+        case 'Kranich':
+          return isWin
+            ? 'Super! Ihr habt die Kranich-Runde gewonnen und den Punkt erhalten.'
+            : 'Schade, das andere Team war bei Kranich besser.';
+        case 'Robbe':
+          return isWin
+            ? 'Stark! Ihr habt die Robbe-Runde gewonnen und den Punkt geholt.'
+            : 'Leider hat das andere Team die Robbe-Runde gewonnen.';
+        case 'Eule':
+          return isWin
+            ? 'Klasse! Ihr habt die Eule-Runde gewonnen und den Punkt erhalten.'
+            : 'Das andere Team war bei Eule erfolgreicher.';
+        case 'Wal':
+          return isWin
+            ? 'Ihr habt die Wal-Runde gewonnen und den Punkt geholt!'
+            : 'Das andere Team hat die Wal-Runde gewonnen.';
+        case 'Elch':
+          return isWin
+            ? 'Ihr wart beim Elch am schnellsten und habt den Punkt geholt!'
+            : 'Das andere Team war beim Elch schneller.';
+        case 'Bär':
+          return isWin
+            ? 'Sehr gut! Ihr habt die Bär-Runde gewonnen und den Punkt erhalten.'
+            : 'Das andere Team war bei Bär näher dran.';
+        case 'Fuchs':
+          return isWin
+            ? 'Ihr habt die Fuchs-Runde gewonnen und den Punkt geholt!'
+            : 'Das andere Team hat bei Fuchs besser.';
+        default:
+          return isWin
+            ? 'Ihr habt diese Runde gewonnen!'
+            : 'Leider hat das andere Team diese Runde gewonnen.';
+      }
+    };
+
+    let emoji = 'ℹ️';
+    let message = '';
+
+    if (resultOutcome === 'win') {
+      emoji = '🎉';
+      message = categoryMessage(true);
+    } else if (resultOutcome === 'lose') {
+      emoji = '😕';
+      message = categoryMessage(false);
+    } else if (resultOutcome === 'tie-win') {
+      emoji = '🤝';
+      const others = winnerIds.filter((id) => myTeamId && id !== myTeamId);
+      const otherNames = formatTeamNames(others.map((id) => teamNameById.get(id) || ('Team ' + id)));
+      message = otherNames
+        ? 'Unentschieden! Ihr teilt euch die Runde mit ' + otherNames + '.'
+        : 'Unentschieden! Ihr teilt euch die Runde.';
+    } else if (resultOutcome === 'tie-lose') {
+      emoji = '🤝';
+      const winnerNames = formatTeamNames(winnerIds.map((id) => teamNameById.get(id) || ('Team ' + id)));
+      message = winnerNames
+        ? 'Unentschieden zwischen ' + winnerNames + '. Der Pot wurde geteilt.'
+        : 'Unentschieden – der Pot wurde geteilt.';
+    } else if (resultOutcome === 'carry') {
+      emoji = '🔁';
+      const carry = currentResult?.carry ?? 0;
+      message = carry
+        ? 'Kein Gewinner – der Pot wächst auf ' + carry + ' Coins.'
+        : 'Kein Gewinner – der Pot wächst in die nächste Runde.';
     }
+
     return (
-      <div className={`result-feedback ${didMyTeamWin ? 'win' : 'lose'}`}>
+      <div className={'result-feedback ' + tone}>
         <div style={{ fontSize: 32, marginBottom: 8 }}>{emoji}</div>
-        <div>{msg}</div>
+        <div>{message}</div>
       </div>
     );
-  }, [cat, didMyTeamWin]);
+  }, [resultOutcome, cat, winnerIds, myTeamId, teamNameById, currentResult]);
 
-  // Show foreground overlay for win/lose for 10s when a winner is announced
+  // Show foreground overlay for win/lose/tie for 5s when a Result eintrifft
   useEffect(() => {
     if (!lastResult) return;
-    if (lastResult.winnerId) {
-      if (lastResult.winnerId === fixedId) {
+
+    const winners = Array.isArray(lastResult.winnerIds)
+      ? lastResult.winnerIds.filter((id) => id !== null && id !== undefined).map((id) => String(id))
+      : [];
+    const hasTie = winners.length > 1;
+    const myId = fixedId ? String(fixedId) : null;
+    const resolvedWinnerId = lastResult.winnerId != null
+      ? String(lastResult.winnerId)
+      : (winners.length === 1 ? winners[0] : null);
+
+    if (hasTie) {
+      setShowTieOverlay(true);
+      setShowWinOverlay(false);
+      setShowLoseOverlay(false);
+      if (hideWinTmo.current) { clearTimeout(hideWinTmo.current); hideWinTmo.current = null; }
+      if (hideLoseTmo.current) { clearTimeout(hideLoseTmo.current); hideLoseTmo.current = null; }
+      if (hideTieTmo.current) { clearTimeout(hideTieTmo.current); }
+      hideTieTmo.current = setTimeout(() => {
+        setShowTieOverlay(false);
+        hideTieTmo.current = null;
+      }, 5000);
+      return;
+    }
+
+    if (hideTieTmo.current) { clearTimeout(hideTieTmo.current); hideTieTmo.current = null; }
+    setShowTieOverlay(false);
+
+    if (resolvedWinnerId) {
+      if (myId && resolvedWinnerId === myId) {
         setShowWinOverlay(true);
+        setShowLoseOverlay(false);
+        if (hideLoseTmo.current) { clearTimeout(hideLoseTmo.current); hideLoseTmo.current = null; }
         if (hideWinTmo.current) clearTimeout(hideWinTmo.current);
         hideWinTmo.current = setTimeout(() => {
           setShowWinOverlay(false);
@@ -854,12 +947,19 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         }, 5000);
       } else {
         setShowLoseOverlay(true);
+        setShowWinOverlay(false);
+        if (hideWinTmo.current) { clearTimeout(hideWinTmo.current); hideWinTmo.current = null; }
         if (hideLoseTmo.current) clearTimeout(hideLoseTmo.current);
         hideLoseTmo.current = setTimeout(() => {
           setShowLoseOverlay(false);
           hideLoseTmo.current = null;
         }, 5000);
       }
+    } else {
+      setShowWinOverlay(false);
+      setShowLoseOverlay(false);
+      if (hideLoseTmo.current) { clearTimeout(hideLoseTmo.current); hideLoseTmo.current = null; }
+      if (hideWinTmo.current) { clearTimeout(hideWinTmo.current); hideWinTmo.current = null; }
     }
   }, [lastResult, fixedId]);
 
@@ -1625,30 +1725,38 @@ export default function TeamFixed({ fixedId, defaultName, defaultAvatar }) {
         </div>
       )}
 
-      {/* Foreground result overlay (win/lose) */}
-      {(showLoseOverlay || showWinOverlay) && (
+      {/* Foreground result overlay */}
+      {(showLoseOverlay || showWinOverlay || showTieOverlay) && (
         <div className="result-overlay" role="alertdialog" aria-live="assertive">
           <div className="result-overlay__backdrop" />
           {(() => {
             const payout = Math.floor((st?.categoryPot || 0) / 3);
             const k = catKey(st?.currentCategory);
+            const tone = showTieOverlay ? 'tie' : (showWinOverlay ? 'win' : 'lose');
+            const winnerNames = tone === 'tie'
+              ? formatTeamNames(winnerIds.map((id) => teamNameById.get(id) || ('Team ' + id)))
+              : null;
+            const title = tone === 'win' ? 'Runde gewonnen!' : tone === 'lose' ? 'Runde verloren' : 'Unentschieden';
             return (
-              <div className={`result-overlay__dialog round-result ${showWinOverlay ? 'win' : 'lose'} cat-${k || ''}`}>
-                <CoinRain type={showWinOverlay ? 'win' : 'lose'} />
+              <div className={'result-overlay__dialog round-result ' + tone + ' cat-' + (k || '')}>
+                {(tone === 'win' || tone === 'lose') && <CoinRain type={tone} />}
                 {k && (
                   <img
                     className="category-icon lg"
-                    src={`/categories/${k}.png`}
+                    src={'/categories/' + k + '.png'}
                     alt={cat || 'Kategorie'}
-                    onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src=`/categories/${k}.svg`; } }}
+                    onError={(e)=>{ if(!e.currentTarget.dataset.fallbackSvg){ e.currentTarget.dataset.fallbackSvg='1'; e.currentTarget.onerror=null; e.currentTarget.src='/categories/' + k + '.svg'; } }}
                   />
                 )}
-                {showWinOverlay && (
+                {tone === 'win' && (
                   <div className="rr-badge">
                     <span className="icon coin coin-sm" aria-hidden />+{payout}
                   </div>
                 )}
-                <h3 className="rr-title">{showWinOverlay ? 'Runde gewonnen!' : 'Runde verloren'}</h3>
+                <h3 className="rr-title">{title}</h3>
+                {tone === 'tie' && winnerNames && (
+                  <p className="rr-category">Pot geteilt: {winnerNames}</p>
+                )}
               </div>
             );
           })()}
@@ -2021,14 +2129,3 @@ export function LobbyPauseFooter({ visible }) {
     </footer>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
